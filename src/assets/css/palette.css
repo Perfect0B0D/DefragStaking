@@ -1,0 +1,15 @@
+:root {
+    --blue-1: #2E3192;
+    --blue-2: #23B2EF;
+    --black: #282828;
+    --white: #FFFFFF;
+    --gray-1: #F4F4F4;
+    --gray-2: #A6B9CA;
+    --green: #02C668;
+
+    --dropped-shadow-3: 4px 4px 16px 0px #28282829;
+    --dropped-shadow-4: 0px 5px 10px 0px rgb(40 40 40 / 16%);
+
+    --footer-height: 20vh;
+    --navbar-height: 3em;
+}

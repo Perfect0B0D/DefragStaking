@@ -1,0 +1,223 @@
+@import url(../../assets/css/palette.css);
+.stake-a {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5em;
+}
+
+.stake-a *:disabled {
+    background: var(--gray-2) !important;
+}
+
+
+.stake-a .element-a {
+    display: flex;
+    flex-direction: row;
+    margin-top: 1em;
+}
+
+.stake-a .element-a .content {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    margin-right: 2em;
+}
+
+.stake-a .element-a .content .title_container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding-right: 2rem;
+}
+
+.stake-a .element-a .content .ammount_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.stake-a .element-a .content .ammount_container span {
+    font-family: Work Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1em;
+}
+
+.stake-a .element-a .content .ammount_container span:nth-child(1){
+
+    font-family: Work Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1.5em;
+
+    display: flex;
+    align-items: center;
+    text-align: right;
+    letter-spacing: 0.25px;
+
+    color: var(--green);
+}
+
+.stake-a .element-a .content .title_container span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+    font-family: "Work Sans";
+    font-style: normal;
+    font-weight: 600;
+
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.25px;
+    font-size: 1.5em;
+    color: var(--black);
+}
+
+.stake-a .cta-container button {
+    background-color: var(--blue-2);
+    color: var(--white);
+
+    /* Other text/Button text */
+    font-family: Work Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1em;
+    padding: 1em;
+    filter: drop-shadow(0px 4px 8px rgba(40, 40, 40, 0.24));
+    width: 9em;
+}
+
+
+.black {
+    color: var(--black) !important;
+}
+
+.blue-2 {
+    color: var(--blue-2) !important;
+}
+
+.stake-a .input-element .content {
+    position: relative;
+}
+
+
+.stake-a .input-element input {
+    width: 100%;
+    border: 1px solid var(--gray-2);
+    text-align: end;
+    padding-right: 6rem;
+
+
+    font-family: Work Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 1.5rem;
+    letter-spacing: 0.25px;
+
+    color: var(--black);
+}
+
+.stake-a .input-element .label {
+    background-color: var(--blue-1);
+    height: fit-content;
+    color: var(--white);
+    padding: 0.5em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    font-weight: bold;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 2em;
+    margin: auto;
+    width: fit-content;
+    height: min-content;
+}
+
+
+.element-a input {
+    width: 100%;
+    border: 1px solid var(--gray-2);
+    box-sizing: border-box;
+}
+
+.element-a .content {
+    position: relative;
+}
+
+.element-a .input-label {
+    position: absolute;
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 1em;
+    bottom: 0;
+    margin: auto;
+    height: fit-content;
+    width: fit-content;
+
+    padding: 0.5rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    background-color: var(--blue-1);
+    color: var(--white);
+
+    font-family: 'Work Sans';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.element-a input {
+    text-align: right;
+    padding-right: 4.5rem;
+
+
+    font-family: "Work Sans";
+    font-style: normal;
+    font-weight: normal;
+    font-size: 1.5rem;
+}
+
+@media (max-width: 767px) {
+    .element-a input {
+        font-size: 1.2rem !important;
+        padding-right: 5rem !important;
+    }
+
+    .element-a .input-label {
+        font-size: 1.2rem;
+    }
+
+    .stake-a .container_contents .cta-container {
+        display: none;
+    }
+
+    .stake-a .container_ctas {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .stake-a .container_ctas .cta-container {
+        width: 48%;
+        display: inline-block;
+    }
+
+    .stake-a .container_ctas .cta-container button {
+        width: 95%;
+    }
+}
+
+@media (min-width: 768px) {
+    .stake-a {
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+    .stake-a .container_ctas {
+        display: none;
+    }
+}

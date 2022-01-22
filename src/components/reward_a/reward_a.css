@@ -1,0 +1,168 @@
+@import url(../../assets/css/palette.css);
+
+.rewards{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-right: 2.5rem !important;
+    
+}
+.cen-com{
+    width: 80%;
+    display: flex;
+    justify-content: center;
+}
+.defragvalue{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+}
+.walletnotconnect{
+    display: flex !important;
+    justify-content: center !important;
+}
+ .r-com{
+    display: flex;
+    justify-content: space-between;
+    background-color: #7f7fe9;
+    margin: 0.5rem;
+    border-radius: 5%;
+}
+
+.rewards-defrag-value{
+    display: flex;
+    margin-top: 0.5rem;
+    margin-left: 0.5rem;
+}
+.rewards-a {
+    display: flex;
+    flex-direction: row;
+    background-color: var(--gray-1);
+    padding: -1.5em;
+    margin: 1.5em;
+    border-radius: 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+img{
+    background-color: #3182ce;
+    border-radius: 10%;
+}
+.rewards-X {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    background-color: var(--gray-1);
+    padding: -1.5em;
+    margin: 1.5em;
+    border-radius: 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+.rewards-X-I{
+    position: relative;
+    background-color: var(--gray-1);
+    padding: -1.5em;
+    margin: 1.5em;
+    border-radius: 20px;
+}
+.rewards-X-sub{
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    background-color: gray;
+}
+span{
+    font-size: 15px;
+    font-weight: 900;
+    text-align: initial;
+    align-self: center;
+}
+
+.row{
+    --bs-gutter-x: 0rem !important;
+}
+
+.rewards-a .title-container {
+    flex: 1;
+    text-align: center;
+}
+
+
+.icons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  
+  .icon {
+    flex: 0 0 auto;
+    padding: 5px;
+    display: block;
+    fill: #000;
+    stroke: #000;
+  }
+  
+  .icon svg { 
+    --size: 3em;
+    
+    fill: inherit;
+    min-height: var(--size);
+    min-width:  var(--size);
+  }
+.rewards-a .title-container .title_element {
+    color: var(--blue-1);
+    font-family: Work Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 2rem;
+    line-height: 48px;
+}
+
+
+.rewards-a .particular {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.rewards-a .particular .ammount {
+    color: var(--green);
+    font-family: Work Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1.5em;
+    line-height: 36px;
+    text-align: center;
+}
+
+.rewards-a .particular .subtitle {
+    font-family: Work Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 27px;
+
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.25px;
+    color: var(--black);
+}
+
+
+@media (max-width: 768px) {
+    .rewards-a {
+        flex-direction: column;
+    }
+
+    .rewards-a .particular {
+        margin-top: 1em;
+    }
+}

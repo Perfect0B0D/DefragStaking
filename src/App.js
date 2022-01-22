@@ -1,142 +1,129 @@
 import React, { useEffect, useState } from "react";
+import Bottom from './components/bottom'
+import RewardA from './components/reward_a'
+import RewardB from './components/reward_b'
+import Stakelp from './components/Stakelp'
+import { chainhex, chainId } from "./config/site.config";
+import Web3 from "web3"
+import { web3_modal} from "./api";
+import StakeDefrag from './components/StakeDefrag'
 import "./App.css";
-import Web3 from "web3";
-import { getTotalReward, getUserReward, getPendingReward, claim } from "./api/reward";
-// import { connectToWallet, offWeb3Modal } from "./api";
-import { chainHex, chainId } from "./config/site.config";
-import { offWeb3Modal, web3_modal } from "./api";
 
-const detectEthereumNetwork = (callback) => {
-  window.ethereum.request({ method: 'eth_chainId' }).then(async (cId) => {
-      if (parseInt(cId) != chainId) { // bsc testnet
-        window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: chainHex }], // chainId must be in hexadecimal numbers
-        }).then(()=>{
-            return callback();
-        })
-      }else{
-          return callback();
-      }
-  });
-}
 
 
 function App() {
   const [myWeb3, setMyWeb3] = useState(null);
   const [account, setAccount] = useState('');
-  const [total, setTotal] = useState(0);
-  const [userReward, setUserReward] = useState(0)
-  const [pendingReward, setPendingReward] = useState(0)
+  const [connected, setconnect] = useState(false);
+
+  const detectEthereumNetwork = (callback) => {
+    window.ethereum.request({ method: 'eth_chainId' }).then(async (cId) => {
+        if (parseInt(cId) != chainId) { // bsc testnet
+          window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: chainhex }], // chainId must be in hexadecimal numbers
+          }).then(()=>{
+              return callback();
+          })
+        }else{
+            return callback();
+        }
+    });
+  }
+  
 
   const connect = async () => {
     if (account !== '') {
       setAccount('');
       setMyWeb3(null);
+      setconnect(false);
       web3_modal.clearCachedProvider();
       setTimeout(() => {
         window.location.reload();
       }, 1);
+      
     }
     else {
-      detectEthereumNetwork(async () => {
-        const provider = await web3_modal.connect();
-        
+        detectEthereumNetwork(async () => {
+          let provider = null;
+        try {
+           provider = await web3_modal.connect();
+        } catch (error) {
+          console.log("asdsafdasfd");
+          console.log(error);
+          window.location.reload();
+          return;   
+        }
         if (!provider.on) {
           return;
         }
         
-        provider.on('accountsChanged', async () => setTimeout(() => window.location.reload(), 1));
+        provider.on('accountsChanged', async () => {
+          console.log("accountchange");
+          setTimeout(() => window.location.reload(), 1)});
 
         provider.on('chainChanged', async (cid) => {
           if (parseInt(cid) !== chainId) {
             await web3_modal.off();
+            setTimeout(() => window.location.reload(), 1);
             return null;
           }
         })
 
+        provider.on('network', (_newNetwork, oldNetwork) => {
+          if (!oldNetwork) return;
+          window.location.reload();
+        });
+        
 
         await web3_modal.toggleModal();
         // provider.
         // regular web3 provider methods
+        console.log("1");
         const web3 = new Web3(provider);
+        console.log("2");
         if(web3){
+          console.log("3");
           setMyWeb3(web3);
           const accounts = await web3.eth.getAccounts();
+          console.log(accounts);
           setAccount(accounts[0]);
         }
       });
     }
   }
 
-  const disconnect = async () => {
-    offWeb3Modal();    
-  }
+
 
   useEffect(() => {
     (async () => {
       if(myWeb3){
-        const _total = await getTotalReward(myWeb3)
-        console.log('total', total);
-        setTotal(_total)
-        if (account !== '') {
-          const _userReward = await getUserReward(myWeb3, account)
-          console.log('user reward', _userReward);
-          if(_userReward){
-            setUserReward(_userReward)
-            setPendingReward(_userReward);
-          }
-        }
-        // const _pendingReward = await getPendingReward(myWeb3, account)
-        // console.log('pending reward', _pendingReward);
-        // setPendingReward(_pendingReward)
+        setconnect(true);   
       }else{
-        setTotal(0);
-        setUserReward(0);
-        setPendingReward(0);
+        console.log("not connect");
       }
     })()
   }, [account, myWeb3])
   return (
     <div className="main">
-      <button className="my-btn connect-btn" onClick={() => connect()}>
-        <div className="connect-btn-text">
-          {account === '' ? 'Connect to metamask' : account}
-        </div>
-      </button>
-      <div className="header">Dashboard</div>
-      <div className="row board">
-        <div className="col-lg-6 col-sm-12">
-          <div className="item">
-            <div className="item-header">Total $USDC Rewards</div>
-            <div className="item-body">
-              <div className="item-name">$USDC</div>
-              <div className="item-value">{ eval(parseInt(total)/1e15).toFixed(3)  }</div>
-            </div>
+      <div className="header">
+        <button className="my-btn connect-btn" onClick={() => connect()}>
+          <div className="connect-btn-text">
+            {account===""?"Connect to metamask":account}
           </div>
-        </div>
-        <div className="col-lg-6 col-sm-12">
-          <div className="item">
-            <div className="item-header">Your Total $USDC Rewards</div>
-            <div className="item-body">
-              <div className="item-name">$USDC</div>
-              <div className="item-value">$ { userReward }</div>
-            </div>
-          </div>
-        </div>
-        <div className="col-lg-12 col-sm-12">
-          <div className="item">
-            <div className="item-header">Pending $USDC Rewards</div>
-            <div className="item-body">
-              <div className="item-name">$USDC</div>
-              <div className="item-value">$ { pendingReward }</div>
-              <div className="d-flex justify-content-center">
-                <button className="my-btn" onClick={() => claim(myWeb3, account)}>Claim Now</button>
-              </div>
-            </div>
-          </div>
-        </div>
+        </button>
       </div>
+      <div className='welcome-header'>
+        <h4 className='welcome-1'>TOKENOMICS</h4>
+        <h1 className='welcome-2'>Staking Dashboard</h1>
+        <h4 className='welcome-3'>Earn rewards by staking liquidity provider shares or Defrag</h4>
+      </div>
+      <RewardA connected={connected} account={account} myWeb3={myWeb3}/>
+      <Stakelp />
+      <StakeDefrag />
+      <RewardB />
+      <Bottom />
+
     </div>
   );
 }

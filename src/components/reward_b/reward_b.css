@@ -1,0 +1,151 @@
+@import url(../../assets/css/palette.css);
+.rewards-b .rewards_container .particular {
+    margin-right: 1rem !important;
+}
+
+.rewards-b .rewards_container .particular:last-child {
+    margin-right: 0rem !important;
+}
+
+.rewards-b {
+    display: flex;
+    flex-direction: column;
+    margin-top: 3rem;
+    margin-right: 1.5em;
+    margin-left: 1.5em;
+    margin-bottom: 1.5rem;
+}
+
+.rewards-b .rewards_container {
+    display: flex;
+}
+
+.rewards-b .rewards_container .particular {
+    margin-top: 1em;
+    background-color: var(--gray-1);
+    padding: 1rem;
+}
+
+.rewards-b .rewards_container .particular .title_container {
+    width: 100%;
+    text-align: left;
+}
+
+.rewards-b .rewards_container .particular .title_container * {
+    font-family: Work Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.rewards-b .rewards_container .body_container {
+    display: flex;
+    width: 100%;
+}
+
+.rewards-b .title-container {
+    flex: 1;
+}
+.rewards-b .title-container .title_element {
+    color: var(--blue-1);
+    font-family: Work Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 2rem;
+    line-height: 48px;
+}
+.rewards-b .particular {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.rewards-b .particular .ammount {
+    color: var(--green);
+    font-family: Work Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1.5em;
+    text-align: center;
+    flex: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rewards-b .particular .subtitle {
+    font-family: Work Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 27px;
+
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    letter-spacing: 0.25px;
+    color: var(--black);
+    flex: 1;
+}
+
+.rewards-b button {
+    background-color: var(--blue-2);
+    color: var(--white);
+
+    font-family: Work Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 0.9em;
+    filter: drop-shadow(0px 4px 8px rgba(40, 40, 40, 0.24));
+    width: max-content;
+}
+
+@media (min-width: 1480px) {
+    .rewards-b button {
+        font-size: 0.8em !important;
+    }
+
+    .rewards-b .particular .ammount {
+        font-size: 0.9em !important;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .rewards-b .rewards_container .body_container {
+        flex-direction: column;
+    }
+
+    .rewards-b .rewards_container .body_container .ammount {
+        justify-content: flex-start;
+    }
+    .rewards-b .rewards_container .body_container .ammount {
+        margin-top: 1em;
+    }
+    .rewards-b .rewards_container .body_container .subtitle {
+        margin-top: 1em;
+    }
+    .rewards_container {
+        flex-direction: column;
+    }
+
+    .rewards-b {
+        flex-direction: column;
+    }
+
+    .rewards-b .particular {
+        margin-top: 2em !important;
+    }
+
+    .rewards-b .rewards_container .particular {
+        margin-right: 0rem !important;
+    }
+    
+    .rewards-b .rewards_container .particular:last-child {
+        margin-right: 0rem !important;
+    }
+}
