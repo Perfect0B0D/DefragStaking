@@ -1,2 +1,2 @@
 # StakingSite
-This is Staking Site on Avalanche Chain
+This is Staking Site on Bsc Chain
