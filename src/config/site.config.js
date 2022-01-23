@@ -2,6 +2,7 @@
 // const http = "https://speedy-nodes-nyc.moralis.io/28eb04c22a0f92b22765e175/bsc/Mainnet";
 // const chainhex="0x38";
 // const chainId = 56;
+//
 const http = "https://speedy-nodes-nyc.moralis.io/28eb04c22a0f92b22765e175/bsc/testnet";
 
 const chainhex="0x61";
