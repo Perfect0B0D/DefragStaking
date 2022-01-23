@@ -108,5 +108,6 @@ export {
   detectEthereumNetwork,
   getDefragContract,
   getMasterChefContrat,
+  getSlpcontract,
   web3_modal
 };

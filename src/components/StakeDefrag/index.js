@@ -5,7 +5,9 @@ import RewardDefrag from '../reward-defrag'
 import ReactTooltip from "react-tooltip";
 import "./StakeDefrag.css"
 
-function stake() {
+function stake(props: any) {
+    const { connected, account, myWeb3 } = props;
+
     return (
         <div className="stake-a">
             <div className="container_contents">

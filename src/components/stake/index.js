@@ -2,6 +2,7 @@ import * as React from 'react';
 import "./stake.css"
 
 function stake(){
+
         return (
             <div className="stake-a">
                 <div className="container_contents">

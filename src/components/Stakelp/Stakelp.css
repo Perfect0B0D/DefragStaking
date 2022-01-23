@@ -208,6 +208,10 @@
 .input-max{
     background-color: #8888ed;
 }
+.input-max:hover{
+    background-color: #42dfbd;
+    border:solid 2px gray;
+}
 
 @media (max-width: 767px) {
     .element-a input {

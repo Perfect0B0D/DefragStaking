@@ -6,12 +6,14 @@ import { chainhex, chainId } from "./config/site.config";
 import Web3 from "web3"
 import { web3_modal} from "./api";
 import StakeDefrag from './components/StakeDefrag'
-import Stake from './components/stake'
 import "./App.css";
 
 
 
 function App() {
+
+ 
+
   const [myWeb3, setMyWeb3] = useState(null);
   const [account, setAccount] = useState('');
   const [connected, setconnect] = useState(false);
@@ -119,7 +121,7 @@ function App() {
         <h4 className='welcome-3'>Earn rewards by staking liquidity provider shares or Defrag</h4>
       </div>
       <RewardA connected={connected} account={account} myWeb3={myWeb3}/>
-      <Stakelp />
+      <Stakelp connected={connected} account={account} myWeb3={myWeb3}/>
       <StakeDefrag />
       {/* <Stake /> */}
       <Bottom />

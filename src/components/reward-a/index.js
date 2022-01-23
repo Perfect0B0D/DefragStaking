@@ -19,6 +19,7 @@ function Reward_a(props: any) {
     const [rewardssubmenuflag, setsubflag] = useState(false);
     const [Defragbalence, SetTokenBalence] = useState(0);
     const [Defragprice, SetDefragprice] = useState(0);
+    const [totalusdprice, SetTotalusdprice] = useState(0);
     const onToggle = () => setsubflag(s => !s);
 
     function buyDefrag() {
@@ -75,9 +76,9 @@ function Reward_a(props: any) {
             console.log(contractInstance);
             console.log("account====>", account);
             let res = ethers.utils.formatEther(await contractInstance.methods.totalPendingRewards(account).call());
-            res = Math.round(res * 100) / 100;
-            console.log(res);
+            res = Math.round(res * 1000) / 1000;
             setpendingdefrag(res);
+            SetTotalusdprice(res*Defragprice);
         } catch (error){
             console.log(error);
         }
@@ -125,7 +126,7 @@ function Reward_a(props: any) {
                             <small className="subtitle">Total</small>
                         </div>
                         <div className="particular">
-                            <div className="ammount">$0.0</div>
+                            <div className="ammount">{totalusdprice}</div>
                             <small className="subtitle">USD Total</small>
                         </div>
 
