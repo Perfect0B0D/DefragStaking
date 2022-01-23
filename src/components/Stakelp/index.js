@@ -1,5 +1,6 @@
 import * as React from 'react';
 import defragimg from '../../assets/images/defragimg.png'
+import Slpimg from '../../assets/images/SLP.png'
 import { FaQuestionCircle } from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
 import "./Stakelp.css"
@@ -10,7 +11,7 @@ function stake() {
             <div className="container_contents">
                 <div className="element-a row">
                     <div className="element-a-a col-lg-4 col-sm-12">
-                        <img src={defragimg} style={{ height: '4rem', fontSize: 'xxx-large' }}></img>
+                        <img src={Slpimg} style={{ height: '4rem', fontSize: 'xxx-large' }}></img>
                         <span>SLP Staking</span>
                     </div>
                     <div className="element-a-b col-lg-8 col-sm-12 row">
