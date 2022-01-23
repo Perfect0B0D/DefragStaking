@@ -5,7 +5,7 @@ import viewcontractimg from '../../assets/images/view-contract.png'
 import pancakeimg from '../../assets/images/pancake.png'
 import { FaCreditCard } from "react-icons/fa";
 import "./reward_a.css"
-import { getDefragContract, getMasterChefContratc } from '../../api'
+import { getDefragContract, getMasterChefContrat } from '../../api'
 import { ethers } from 'ethers'
 
 function Reward_a(props: any) {
@@ -15,8 +15,10 @@ function Reward_a(props: any) {
     // const cx = window.classNames;
     // const [isOpen, setIsOpen] = useState(false);
     // const onToggle = () => setIsOpen(s => !s);
+    const[pendingdefrag, setpendingdefrag] = useState(0.0);
     const [rewardssubmenuflag, setsubflag] = useState(false);
     const [Defragbalence, SetTokenBalence] = useState(0);
+    const [Defragprice, SetDefragprice] = useState(0);
     const onToggle = () => setsubflag(s => !s);
 
     function buyDefrag() {
@@ -67,8 +69,38 @@ function Reward_a(props: any) {
         }
     }
 
+    async function getpendingdefrag(myWeb3, account){
+        try{
+            const contractInstance = getMasterChefContrat(myWeb3);
+            console.log(contractInstance);
+            console.log("account====>", account);
+            let res = ethers.utils.formatEther(await contractInstance.methods.totalPendingRewards(account).call());
+            res = Math.round(res * 100) / 100;
+            console.log(res);
+            setpendingdefrag(res);
+        } catch (error){
+            console.log(error);
+        }
+    }
+
+    async function getDefragprice() {
+        fetch("https://api.pancakeswap.info/api/v2/tokens/0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82")
+          .then(res => res.json())
+          .then(
+            (result) => {
+              console.log(result.data.price)
+              const price = Math.round(result.data.price * 1000000)/1000000;
+              SetDefragprice(price);
+            },
+            (error) => {
+              console.log(error);
+            }
+          )
+      }
+
     useEffect(() => {
         (async () => {
+            getDefragprice();
             console.log("connected===>", connected);
         })()
     }, [connected])
@@ -77,6 +109,7 @@ function Reward_a(props: any) {
         if (connected) {
             (async () => {
                 getDefragbalence(myWeb3, account);
+                getpendingdefrag(myWeb3, account);
             })()
         }
     })
@@ -88,7 +121,7 @@ function Reward_a(props: any) {
                     <div className="rewards-a col-lg-6 col-sm-10">
                         <div className="title-container"><b className="title_element">Unclaimed Defrag to Vest</b></div>
                         <div className="particular">
-                            <div className="ammount">0.0 DEFRAG</div>
+                            <div className="ammount">{pendingdefrag} DEFRAG</div>
                             <small className="subtitle">Total</small>
                         </div>
                         <div className="particular">
@@ -97,7 +130,7 @@ function Reward_a(props: any) {
                         </div>
 
                         <div className="particular">
-                            <div className="ammount">$0.0</div>
+                            <div className="ammount">{Defragprice}</div>
                             <small className="subtitle">DEFRAG Current price</small>
                         </div>
 
@@ -105,7 +138,7 @@ function Reward_a(props: any) {
                     <div className="col-lg-4 col-sm-10 rewards-X-I">
                         <div className="rewards-X">
                             <img src={defragimg} style={{ height: '4rem', fontSize: 'xxx-large' }}></img>
-                            <span>$0.0</span>
+                            <span>{Defragprice}</span>
                             <span className="icon" style={{ float: 'left' }} onClick={onToggle}>
                                 <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M455,113a15,15 0 01 19,0l29,29a15,15 0 01 0,19l-235,236a16,16 0 01-24,0l-235-236a15,15 0 01 0-19l29-29a15,15 0 01 19,0l199,199z" />

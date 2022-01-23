@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Bottom from './components/bottom'
-import RewardA from './components/reward_a'
-import RewardB from './components/reward_b'
+import RewardA from './components/reward-a'
 import Stakelp from './components/Stakelp'
 import { chainhex, chainId } from "./config/site.config";
 import Web3 from "web3"
@@ -123,7 +122,6 @@ function App() {
       <Stakelp />
       <StakeDefrag />
       {/* <Stake /> */}
-      <RewardB />
       <Bottom />
 
     </div>

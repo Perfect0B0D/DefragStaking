@@ -1,8 +1,9 @@
 import * as React from 'react';
 import defragimg from '../../assets/images/defragimg.png'
 import Slpimg from '../../assets/images/SLP.png'
-import { FaQuestionCircle } from "react-icons/fa";
+import { FaQuestionCircle, FaRProject } from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
+import Rewardslp from '../reward-slp'
 import "./Stakelp.css"
 
 function stake() {
@@ -57,6 +58,7 @@ function stake() {
                         </div>
                     </div>
                 </div>
+                <Rewardslp />
             </div>
         </div>
     )

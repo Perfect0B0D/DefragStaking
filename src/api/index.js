@@ -1,7 +1,8 @@
 import {chainId, http, chainhex } from '../config/site.config'
 import DefragAbi from '../ABI/Defrag.json'
 import MasterAbi from '../ABI/Master.json'
-import {DefragAddress, MasterChefAddress} from '../config/site.config'
+import SlpAbi from '../ABI/SLP.json'
+import {DefragAddress, MasterChefAddress, SLPAddress} from '../config/site.config'
 
 import Web3 from 'web3';
 import Web3Modal from 'web3modal';
@@ -52,7 +53,11 @@ const getDefragContract = (Web3) => {
   return res
 }
 
-const getMasterChefContratc =(Web3) =>{
+const getSlpcontract = (Web3) =>{
+  let res = new Web3.eth.Contract(SlpAbi, SLPAddress);
+  return res
+}
+const getMasterChefContrat =(Web3) =>{
   let res = new Web3.eth.Contract(MasterAbi, MasterChefAddress);
   return res
 }
@@ -102,6 +107,6 @@ export {
   offWeb3Modal,
   detectEthereumNetwork,
   getDefragContract,
-  getMasterChefContratc,
+  getMasterChefContrat,
   web3_modal
 };

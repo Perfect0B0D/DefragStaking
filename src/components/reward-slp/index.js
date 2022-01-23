@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { FaQuestionCircle } from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
-import "./reward_b.css"
+import "./reward_slp.css"
 
 
-function Reward_b() {
+function Reward_slp() {
     return (
         <div className="rewards-b">
             <div className="title-container"><b className="title_element">Vesting Rewards</b></div>
@@ -29,7 +29,7 @@ function Reward_b() {
                         <span>Voting Power</span>
                     </div>
                     <div className="body_container">
-                        <div className="ammount">0.0 DEFRAG</div>
+                        <div className="ammount">0.0</div>
                         <div className="subtitle">
                             <button className="main_btn">Go to active proposals</button>
                         </div>
@@ -40,4 +40,4 @@ function Reward_b() {
     )
 }
 
-export default Reward_b;
+export default Reward_slp;

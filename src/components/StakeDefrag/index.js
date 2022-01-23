@@ -1,6 +1,7 @@
 import * as React from 'react';
 import defragimg from '../../assets/images/defragimg.png'
 import { FaQuestionCircle } from "react-icons/fa";
+import RewardDefrag from '../reward-defrag'
 import ReactTooltip from "react-tooltip";
 import "./StakeDefrag.css"
 
@@ -56,7 +57,9 @@ function stake() {
                         </div>
                     </div>
                 </div>
+                <RewardDefrag />
             </div>
+         
         </div>
     )
 }
