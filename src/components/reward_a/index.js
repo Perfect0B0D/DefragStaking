@@ -24,7 +24,8 @@ function Reward_a(props: any) {
     }
 
     function viewDefrag() {
-        window.open('https://testnet.bscscan.com/address/0x981f0ed8bfa27b96b11be6ced34d876464aee6f5', '_blank');
+        
+        window.open('https://testnet.bscscan.com/address/0x19E639dc82f859F2a20a9F558eAefeE0b75e31DC', '_blank');
 
     }
     async function addtokentowallet() {
