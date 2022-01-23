@@ -7,6 +7,7 @@ import { chainhex, chainId } from "./config/site.config";
 import Web3 from "web3"
 import { web3_modal} from "./api";
 import StakeDefrag from './components/StakeDefrag'
+import Stake from './components/stake'
 import "./App.css";
 
 
@@ -121,6 +122,7 @@ function App() {
       <RewardA connected={connected} account={account} myWeb3={myWeb3}/>
       <Stakelp />
       <StakeDefrag />
+      {/* <Stake /> */}
       <RewardB />
       <Bottom />
 

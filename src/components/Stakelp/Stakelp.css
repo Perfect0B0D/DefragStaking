@@ -3,6 +3,29 @@
     display: flex;
     flex-direction: column;
     padding: 1.5em;
+ 
+}
+
+.main_btn{
+    width: 70%;
+    border-radius: 40%;
+    border: solid 2px gray;
+    background-color: #23b2ef;
+}
+.main_btn:hover{
+    border: solid 2px rgb(148, 51, 51);
+    background-color: #23ca23;
+}
+ 
+.element-a-a {
+    display: flex;
+    justify-content: space-evenly;
+}
+.container_contents{
+    border: solid 2px gray;
+    border-radius: 11px;
+    /* margin: 3px; */
+    padding: 15px 15px 15px 20px;
 }
 
 .stake-a *:disabled {
@@ -13,11 +36,11 @@
 .stake-a .element-a {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     margin-top: 1em;
 }
 
 .stake-a .element-a .content {
-    flex: 1;
     display: flex;
     flex-direction: row;
     margin-right: 2em;
@@ -191,7 +214,11 @@
         font-size: 1.2rem !important;
         padding-right: 5rem !important;
     }
-
+    .element-a-a{
+        margin-bottom: 1rem;
+        margin-top:1rem;
+        
+    }
     .element-a .input-label {
         font-size: 1.2rem;
     }

@@ -85,7 +85,7 @@ function Reward_a(props: any) {
             {connected ?
                 <div className="rewards row">
                     <div className="rewards-a col-lg-6 col-sm-10">
-                        <div className="title-container"><b className="title_element">Your Rewards</b></div>
+                        <div className="title-container"><b className="title_element">Unclaimed Defrag to Vest</b></div>
                         <div className="particular">
                             <div className="ammount">0.0 DEFRAG</div>
                             <small className="subtitle">Total</small>

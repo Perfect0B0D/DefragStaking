@@ -9,11 +9,14 @@
     background: var(--gray-2) !important;
 }
 
-
+input{
+    padding-right: 0px !important;
+}
 .stake-a .element-a {
     display: flex;
     flex-direction: row;
-    margin-top: 1em;
+    margin-top: 2em;
+    margin-bottom: 2rem;
 }
 
 .stake-a .element-a .content {
@@ -53,7 +56,6 @@
 
     display: flex;
     align-items: center;
-    text-align: right;
     letter-spacing: 0.25px;
 
     color: var(--green);
@@ -149,6 +151,10 @@
     position: relative;
 }
 
+.input-max:hover{
+  border:solid 2px gray;
+  background-color: green;
+}
 .element-a .input-label {
     position: absolute;
     display: block;
@@ -173,7 +179,6 @@
 }
 
 .element-a input {
-    text-align: right;
     padding-right: 4.5rem;
 
 
@@ -186,9 +191,10 @@
 @media (max-width: 767px) {
     .element-a input {
         font-size: 1.2rem !important;
-        padding-right: 5rem !important;
+        padding-right: 0rem !important;
     }
-
+    
+   
     .element-a .input-label {
         font-size: 1.2rem;
     }
