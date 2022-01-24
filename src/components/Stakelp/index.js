@@ -17,6 +17,9 @@ function StakeLp(props: any) {
     const [Slp_apy, setapy] = useState(0);
     const [Slpbalance, setSlpbalance] = useState(0);
     const [stakevalue, setstakevalue] = useState(0);
+    const [withdrawvalue, setWithdrawvalue] = useState(0);
+    const [votingpowervalue, setvotingpower] = useState(0);
+    const [power, setPower] = useState(60);
 
     async function getSlpbalance(myWeb3, account){
         try {
@@ -44,6 +47,14 @@ function StakeLp(props: any) {
        setstakevalue(Slpbalance);
     }
 
+    function withdrawmax(){
+        setWithdrawvalue(stakevalue)
+    }
+
+    function onchangew(event){
+        setWithdrawvalue(event.target.value);
+    }
+
     
     function addliquidity(){
         if(connected){
@@ -61,9 +72,10 @@ function StakeLp(props: any) {
             const pool = await contractInstance.methods.poolInfo(1).call();
             const defragperblock = await contractInstance.methods.defragPerBlock().call();
             const totalallocpoint = await contractInstance.methods.totalAllocPoint().call();
-            console.log("block====>", defragperblock, totalallocpoint, pool.total);
+            // console.log("block====>", defragperblock, totalallocpoint, pool.total);
 
-            console.log("slp pool info ===>", pool.allocPoint);
+            // console.log("slp pool info ===>", pool.allocPoint);
+            setPower(pool.power);
             var apy = 0;
             if(pool.total == 0){
                  apy = 750;
@@ -82,8 +94,24 @@ function StakeLp(props: any) {
     async function stakelp(){
         try {
             const contractInstance = getMasterChefContrat(myWeb3);
-            const stakeamount = BigNumber.from(stakevalue)
+            const stakeamount = BigNumber.from(stakevalue * BigNumber.from(1000000000000000000));
             var result = contractInstance.deposit(stakeamount).send({from:account});
+            if(result.status){
+                window.location.reload();
+            }
+            else{
+                alert("Stake error");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function withdrawlp(){
+        try {
+            const contractInstance = getMasterChefContrat(myWeb3);
+            const withdrawamount = BigNumber.from(withdrawvalue * BigNumber.from(1000000000000000000));
+            var result = contractInstance.withdraw(withdrawamount).send({from:account});
             if(result.status){
                 window.location.reload();
             }
@@ -99,6 +127,7 @@ function StakeLp(props: any) {
         if (connected) {
             (async () => {
                 getSlpbalance(myWeb3, account);
+                setvotingpower(Slpbalance*power);
                 getapy(myWeb3);
                 console.log("adfsadfasdfas");
             })()
@@ -138,7 +167,7 @@ function StakeLp(props: any) {
                             <button  className="input-max" onClick={stakemax}>Max</button>
                         </div>
                         <div className="element-a-a col-6">
-                            <button className="main_btn">Stake more</button>
+                            <button className="main_btn" onClick={stakelp}>Stake more</button>
                         </div>
                     </div>
                 </div>
@@ -149,15 +178,15 @@ function StakeLp(props: any) {
                     </div>
                     <div className="element-a-b col-lg-8 col-sm-12 row">
                         <div className="element-a-a col-6">
-                            <input type="text" placeholder="0.0" />
-                            <button className="input-max" >Max</button>
+                            <input type="text" placeholder="0.0" value={withdrawvalue} onchange={onchangew}/>
+                            <button className="input-max" onClick={withdrawmax} >Max</button>
                         </div>
                         <div className="element-a-a col-6">
-                            <button className="main_btn">Unstake</button>
+                            <button className="main_btn" onClick={withdrawlp}>Unstake</button>
                         </div>
                     </div>
                 </div>
-                <Rewardslp />
+                <Rewardslp connected={connected} account={account} myWeb3={myWeb3} votingpower = {votingpowervalue}/>
             </div>
         </div>
     )

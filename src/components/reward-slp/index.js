@@ -1,10 +1,18 @@
 import * as React from 'react';
 import { FaQuestionCircle } from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
+import { getMasterChefContrat } from '../../api'
 import "./reward_slp.css"
 
 
-function Reward_slp() {
+function Reward_slp(props: any) {
+    const { connected, account, myWeb3,votingpower } = props;
+
+    
+    
+    function goproposal(){
+        window.open("https://vote.defrag.com/#/", '_blank');
+    }
     return (
         <div className="rewards-b">
             <div className="title-container"><b className="title_element">Vesting Rewards</b></div>
@@ -29,9 +37,9 @@ function Reward_slp() {
                         <span>Voting Power</span>
                     </div>
                     <div className="body_container">
-                        <div className="ammount">0.0</div>
+                        <div className="ammount">{votingpower}</div>
                         <div className="subtitle">
-                            <button className="main_btn">Go to active proposals</button>
+                            <button className="main_btn" onClick={goproposal}>Go to active proposals</button>
                         </div>
                     </div>
                 </div>
