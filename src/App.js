@@ -51,7 +51,6 @@ function App() {
         try {
            provider = await web3_modal.connect();
         } catch (error) {
-          console.log("asdsafdasfd");
           console.log(error);
           window.location.reload();
           return;   
@@ -61,7 +60,7 @@ function App() {
         }
         
         provider.on('accountsChanged', async () => {
-          console.log("accountchange");
+          // console.log("accountchange");
           setTimeout(() => window.location.reload(), 1)});
 
         provider.on('chainChanged', async (cid) => {
@@ -81,14 +80,14 @@ function App() {
         await web3_modal.toggleModal();
         // provider.
         // regular web3 provider methods
-        console.log("1");
+        // console.log("1");
         const web3 = new Web3(provider);
-        console.log("2");
+        // console.log("2");
         if(web3){
-          console.log("3");
+          // console.log("3");
           setMyWeb3(web3);
           const accounts = await web3.eth.getAccounts();
-          console.log(accounts);
+          // console.log(accounts);
           setAccount(accounts[0]);
         }
       });
@@ -122,7 +121,7 @@ function App() {
       </div>
       <RewardA connected={connected} account={account} myWeb3={myWeb3}/>
       <Stakelp connected={connected} account={account} myWeb3={myWeb3}/>
-      <StakeDefrag />
+      <StakeDefrag connected={connected} account={account} myWeb3={myWeb3} />
       {/* <Stake /> */}
       <Bottom />
 

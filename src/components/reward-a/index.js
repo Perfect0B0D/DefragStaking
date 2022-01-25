@@ -59,11 +59,11 @@ function Reward_a(props: any) {
     async function getDefragbalence(myWeb3, account) {
         try {
             const contractInstance = getDefragContract(myWeb3);
-            console.log(contractInstance);
-            console.log("account====>", account);
+            // console.log(contractInstance);
+            // console.log("account====>", account);
             let res = ethers.utils.formatEther(await contractInstance.methods.balanceOf(account).call());
             res = Math.round(res * 100) / 100;
-            console.log(res);
+            // console.log(res);
             SetTokenBalence(res);
         } catch (error) {
             console.log(error);
@@ -73,8 +73,8 @@ function Reward_a(props: any) {
     async function getpendingdefrag(myWeb3, account){
         try{
             const contractInstance = getMasterChefContrat(myWeb3);
-            console.log(contractInstance);
-            console.log("account====>", account);
+            // console.log(contractInstance);
+            // console.log("account====>", account);
             let res = ethers.utils.formatEther(await contractInstance.methods.totalPendingRewards(account).call());
             res = Math.round(res * 1000) / 1000;
             setpendingdefrag(res);
@@ -89,7 +89,7 @@ function Reward_a(props: any) {
           .then(res => res.json())
           .then(
             (result) => {
-              console.log(result.data.price)
+            //   console.log(result.data.price)
               const price = Math.round(result.data.price * 1000000)/1000000;
               SetDefragprice(price);
             },

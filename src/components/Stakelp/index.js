@@ -1,14 +1,15 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
+import * as React from 'react'
+import { useState, useEffect } from 'react'
 import defragimg from '../../assets/images/defragimg.png'
 import Slpimg from '../../assets/images/SLP.png'
-import { FaQuestionCircle, FaRProject } from "react-icons/fa";
-import ReactTooltip from "react-tooltip";
+import { FaQuestionCircle, FaRProject } from "react-icons/fa"
+import ReactTooltip from "react-tooltip"
 import Rewardslp from '../reward-slp'
 import { getSlpcontract, getMasterChefContrat } from '../../api'
-import {BigNumber, ethers } from 'ethers'
+import {ethers } from 'ethers'
+import  BigNumber from 'bignumber.js'
 import "./Stakelp.css"
-import stake from '../stake';
+
 
 function StakeLp(props: any) {
     var blocknumbers = 2252570; // block numbers in year
@@ -17,6 +18,7 @@ function StakeLp(props: any) {
     const [Slp_apy, setapy] = useState(0);
     const [Slpbalance, setSlpbalance] = useState(0);
     const [stakevalue, setstakevalue] = useState(0);
+    const [stakedvalue, setstakedvalue] = useState(0);
     const [withdrawvalue, setWithdrawvalue] = useState(0);
     const [votingpowervalue, setvotingpower] = useState(0);
     const [power, setPower] = useState(60);
@@ -24,11 +26,11 @@ function StakeLp(props: any) {
     async function getSlpbalance(myWeb3, account){
         try {
             const contractInstance = getSlpcontract(myWeb3);
-            console.log(contractInstance);
-            console.log("account====>", account);
+            // console.log(contractInstance);
+            // console.log("account====>", account);
             let res = ethers.utils.formatEther(await contractInstance.methods.balanceOf(account).call());
             res = Math.round(res * 100) / 100;
-            console.log("slp balance===>", res);
+            // console.log("slp balance===>", res);
             setSlpbalance(res);
         } catch (error) {
             console.log(error);
@@ -37,21 +39,22 @@ function StakeLp(props: any) {
     }
 
 
-    function onchange(event){
+    function onchangeS(event){
         // console.log(event.target.value);
         setstakevalue(event.target.value);
     }
 
     function stakemax(){
-       console.log("lp==>", Slpbalance);
+    //    console.log("lp==>", Slpbalance);
        setstakevalue(Slpbalance);
     }
 
     function withdrawmax(){
-        setWithdrawvalue(stakevalue)
+        setWithdrawvalue(stakedvalue);
     }
 
     function onchangew(event){
+        // console.log("withdrawvalue===>", event.target.value)
         setWithdrawvalue(event.target.value);
     }
 
@@ -64,11 +67,27 @@ function StakeLp(props: any) {
             window.alert("First connect your wallet");
         }
     }
+
+    async function getstkedvalue(myWeb3, account){
+          try {
+              console.log("get staked balance before");
+            const contractInstance = getMasterChefContrat(myWeb3);
+            let user = await contractInstance.methods.userInfo(1, account).call();
+            console.log(user);
+            var staked = user.amount;
+            console.log("staked balence===>", staked);
+            staked = Math.round(staked * 100) / 100;
+            setstakedvalue(staked);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     async function getapy(myWeb3){
         try {
             const contractInstance = getMasterChefContrat(myWeb3);
-            console.log(contractInstance);
-            console.log("account====>", account);
+            // console.log(contractInstance);
+            // console.log("account====>", account);
             const pool = await contractInstance.methods.poolInfo(1).call();
             const defragperblock = await contractInstance.methods.defragPerBlock().call();
             const totalallocpoint = await contractInstance.methods.totalAllocPoint().call();
@@ -84,7 +103,7 @@ function StakeLp(props: any) {
                 apy = Math.round(defragperblock * blocknumbers / totalallocpoint * pool.allocPoint / pool.total * 100 * 1000)/1000;
             // apy = Math.round(apy * 1000) / 1000;
             }
-            console.log(apy);
+            // console.log(apy);
             setapy(apy);
         } catch (error) {
             console.log(error);
@@ -94,8 +113,9 @@ function StakeLp(props: any) {
     async function stakelp(){
         try {
             const contractInstance = getMasterChefContrat(myWeb3);
-            const stakeamount = BigNumber.from(stakevalue * BigNumber.from(1000000000000000000));
-            var result = contractInstance.deposit(stakeamount).send({from:account});
+            var stakeamount = new BigNumber(stakevalue).multipliedBy(new BigNumber(1000000000000000000));
+            console.log("stake amount===>", stakeamount);
+            var result = await contractInstance.methods.deposit(1, stakeamount).send({from:account});
             if(result.status){
                 window.location.reload();
             }
@@ -128,8 +148,8 @@ function StakeLp(props: any) {
             (async () => {
                 getSlpbalance(myWeb3, account);
                 setvotingpower(Slpbalance*power);
+                getstkedvalue(myWeb3, account);
                 getapy(myWeb3);
-                console.log("adfsadfasdfas");
             })()
         }
     })
@@ -163,7 +183,7 @@ function StakeLp(props: any) {
                     </div>
                     <div className="element-a-b col-lg-8 col-sm-12 row">
                         <div className="element-a-a col-6">
-                            <input type="text" placeholder="0.0" value={stakevalue} onChange={onchange} />
+                            <input type="text" placeholder="0.0" value={stakevalue} onChange={onchangeS} />
                             <button  className="input-max" onClick={stakemax}>Max</button>
                         </div>
                         <div className="element-a-a col-6">
@@ -174,11 +194,11 @@ function StakeLp(props: any) {
                 <div className="element-a row">
                     <div className="element-a-a col-lg-4 col-sm-12">
                         <span>Current staked:</span>
-                        <span>0.0 SLP</span>
+                        <span>{stakedvalue} SLP</span>
                     </div>
                     <div className="element-a-b col-lg-8 col-sm-12 row">
                         <div className="element-a-a col-6">
-                            <input type="text" placeholder="0.0" value={withdrawvalue} onchange={onchangew}/>
+                            <input type="text" placeholder="0.0" value={withdrawvalue} onChange={onchangew}/>
                             <button className="input-max" onClick={withdrawmax} >Max</button>
                         </div>
                         <div className="element-a-a col-6">
