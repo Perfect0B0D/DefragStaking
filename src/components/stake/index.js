@@ -1,62 +1,30 @@
-import * as React from 'react';
-import "./stake.css"
+import React, { useEffect, useState } from "react";
+import RewardA from '../reward-a'
+import Stakelp from '../Stakelp'
+import StakeDefrag from '../StakeDefrag'
+import "./stake.css";
 
-function stake(){
 
-        return (
-            <div className="stake-a">
-                <div className="container_contents">
-                    <div className="element-a">
-                        <div className="content">
-                            <div className="title_container">
-                                <span>Stake your DEFRAG Tokens and earn:</span>
-                            </div>
-                            <div className="ammount_container">
-                                <span>250%</span>
-                                <span>APY</span>
-                            </div>
-                        </div>
-                        <div className="cta-container">
-                            <button>BUY more</button>
-                        </div>
-                    </div>
-                    <div className="element-a">
-                        <div className="content">
-                            <div className="title_container">
-                                <span>Currently staked:</span>
-                            </div>
-                            <div className="ammount_container">
-                                <span className="black">0.0 DEFRAG</span>
-                                <span className="blue-2">.0.3% of Staked</span>
-                            </div>
-                        </div>
-                        <div className="cta-container">
-                            <button>Stake more</button>
-                        </div>
-                    </div>
-                    <div className="element-a">
-                        <div className="content">
-                            <input type="text"/>
-                            <span className="input-label">0.0</span>
-                        </div>
-                        <div className="cta-container">
-                            <button disabled>Unstake</button>
-                        </div>
-                    </div>
-                </div>
-                <div className="container_ctas">
-                        <div className="cta-container">
-                            <button>AddLiquidity</button>
-                        </div>
-                        <div className="cta-container">
-                            <button>Stake more</button>
-                        </div>
-                        <div className="cta-container">
-                            <button disabled>Unstake</button>
-                        </div>
-                </div>
-            </div>
-        )
-    }
 
-export default stake;
+function Stake(props: any) {
+
+const {connected, account, myWeb3} = props;
+ 
+
+  return (
+    <>
+      <div className='welcome-header'>
+        <h4 className='welcome-1'>TOKENOMICS</h4>
+        <h1 className='welcome-2'>Staking Dashboard</h1>
+        <h4 className='welcome-3'>Earn rewards by staking liquidity provider shares or Defrag</h4>
+      </div>
+      <RewardA connected={connected} account={account} myWeb3={myWeb3}/>
+      <Stakelp connected={connected} account={account} myWeb3={myWeb3}/>
+      <StakeDefrag connected={connected} account={account} myWeb3={myWeb3} />
+      {/* <Stake /> */}
+
+    </>
+  );
+}
+
+export default Stake;

@@ -1,0 +1,40 @@
+.allocation_sub_1{
+    display: flex;
+    flex-direction: column;
+    padding-left: 3% !important;
+}
+.allocation_sub_2{
+    padding-right: 1% !important;
+}
+.allocation_sub_a{
+    font-size: 30px;
+    justify-content: left;
+    align-self: flex-start;
+}
+
+.allocation_sub_b{
+    justify-content: left;
+    align-self: flex-start;
+    font-weight: 300;
+}
+.allocation_button{
+    background-color: #3182ce;
+    height: 80%;
+    font-size: large;
+    font-weight: 800;
+    border-radius: 5px;
+    border: solid 2px gray;
+}
+
+.allocation{
+    margin: 10% !important;
+    background-color: darkgray;
+    border-radius: 7px;
+}
+
+@media (max-width: 767px) {
+    .allocation_sub_a{
+        font-size: 20px;
+    }
+}
+

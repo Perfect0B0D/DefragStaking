@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Bottom from './components/bottom'
-import RewardA from './components/reward-a'
-import Stakelp from './components/Stakelp'
 import { chainhex, chainId } from "./config/site.config";
 import Web3 from "web3"
 import { web3_modal} from "./api";
-import StakeDefrag from './components/StakeDefrag'
+import Stake from './components/stake';
+import Vestingreward from "./components/vestingreward";
 import "./App.css";
+import {Route, Switch, Router, Link } from 'react-router-dom';
 
 
 
@@ -106,25 +106,30 @@ function App() {
     })()
   }, [account, myWeb3])
   return (
-    <div className="main">
+      <div className="main">
       <div className="header">
+      <nav>
+              <Link to="/">Stakeing</Link>
+              <Link to="/vest">vesting</Link>
+        </nav>
         <button className="my-btn connect-btn" onClick={() => connect()}>
           <div className="connect-btn-text">
             {account===""?"Connect to metamask":account}
           </div>
         </button>
       </div>
-      <div className='welcome-header'>
-        <h4 className='welcome-1'>TOKENOMICS</h4>
-        <h1 className='welcome-2'>Staking Dashboard</h1>
-        <h4 className='welcome-3'>Earn rewards by staking liquidity provider shares or Defrag</h4>
-      </div>
-      <RewardA connected={connected} account={account} myWeb3={myWeb3}/>
-      <Stakelp connected={connected} account={account} myWeb3={myWeb3}/>
-      <StakeDefrag connected={connected} account={account} myWeb3={myWeb3} />
-      {/* <Stake /> */}
-      <Bottom />
+      
 
+      <Switch>
+        <Route exact path='/'>
+          <Stake connected={connected} account={account} myWeb3={myWeb3} />
+        </Route>
+        <Route exact path='/vest'>
+          <Vestingreward connected={connected} account={account} myWeb3={myWeb3}/>
+        </Route>
+      </Switch>
+
+      <Bottom />
     </div>
   );
 }

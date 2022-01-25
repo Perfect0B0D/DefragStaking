@@ -3,9 +3,11 @@
   margin: 10px 25px;
   max-width: 185px;
 }
+
 .connect-btn-text {
   overflow: hidden;
 }
+
 .my-btn {
   padding: 10px 15px;
   border: none;
@@ -14,35 +16,58 @@
   color: white;
   cursor: pointer;
 }
-.header{
-  height: 70px;
-  background-color: black;
+
+.allocation_sub_2{
+  display: grid;
+  align-items: center;
 }
 
-.welcome-header{
+nav{
+  width: 150px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-left: 10%;
+}
+a {
+  color: #eff0f3fa !important;
+  text-decoration: none !important;
+  font-family: fantasy !important;
+}
+
+a:hover{
+  color:#3182ce !important;
+}
+.header {
+  height: 70px;
+  background-color: black;
+  display: flex;
+  justify-content: space-between;
+}
+
+.welcome-header {
   text-align: center;
   padding-top: 60px;
   padding-bottom: 60px;
 }
 
-.welcome-1{
+.welcome-1 {
   font-weight: 600;
   font-size: 1rem;
   line-height: 1.5rem;
   color: rgba(79, 70, 229, 1.0)
 }
 
-.welcome-2{
+.welcome-2 {
   color: #112827;
   font-size: 48px;
   font-weight: 600;
   padding-top: 5px;
 }
 
-.welcome-3{
+.welcome-3 {
   color: #6B7280;
   font-size: 1.25rem;
   line-height: 1.75rem;
   margin-top: 15px;
 }
-
