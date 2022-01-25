@@ -109,5 +109,6 @@ export {
   getDefragContract,
   getMasterChefContrat,
   getSlpcontract,
-  web3_modal
+  web3_modal,
+  MasterChefAddress
 };

@@ -7,7 +7,7 @@ import ReactTooltip from "react-tooltip";
 import "./StakeDefrag.css"
 import  BigNumber from 'bignumber.js'
 import Rewarddefrag from '../reward-defrag'
-import { getDefragContract, getMasterChefContrat } from '../../api'
+import { getDefragContract, getMasterChefContrat, MasterChefAddress } from '../../api'
 import {ethers } from 'ethers'
 
 
@@ -44,7 +44,7 @@ function Stakedefrag(props: any) {
             const contractInstance = getMasterChefContrat(myWeb3);
             let user = await contractInstance.methods.userInfo(0, account).call();
             var staked =ethers.utils.formatEther( user.amount );
-            staked = Math.round(staked * 100) / 100;
+            staked = Math.round(staked * 10000) / 10000;
             setstakedvalue(staked);
         } catch (error) {
             console.log(error);
@@ -58,7 +58,7 @@ function Stakedefrag(props: any) {
 
     function stakemax(){
     //    console.log("lp==>", defragbalance);
-       setstakevalue(defragbalance);
+       setstakevalue(defragbalance-0.0001);
     }
 
     function withdrawmax(){
@@ -106,8 +106,25 @@ function Stakedefrag(props: any) {
     }
 
     async function Depositdefrag(){
+        if(stakevalue > defragbalance){
+            window.alert("you havn't got enough balance to stake.");
+            return;
+        }
         try {
             const contractInstance = getMasterChefContrat(myWeb3);
+            const defragcontract = getDefragContract(myWeb3);
+            const maxUint256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+            var allownce = await defragcontract.methods.allowance(account, MasterChefAddress).call();
+            if (allownce < stakevalue){
+                var approveresult = await defragcontract.methods.approve(MasterChefAddress, maxUint256).send({from: account});
+                if(approveresult.status){
+                    console.log("success approve");
+                }
+                else{
+                    console.log("approve error");
+                    return;
+                }
+            }
             const stakeamount = new BigNumber(stakevalue).multipliedBy(new BigNumber(1000000000000000000));
             var result =await contractInstance.methods.deposit(0, stakeamount).send({from:account});
             if(result.status){
@@ -122,6 +139,10 @@ function Stakedefrag(props: any) {
     }
 
     async function withdrawdefrag(){
+        if(stakedvalue < withdrawvalue){
+            window.alert("you haven't got enough staked amount to withdraw.");
+            return;
+        }
         try {
             const contractInstance = getMasterChefContrat(myWeb3);
             const withdrawamount = new BigNumber(withdrawvalue).multipliedBy(new BigNumber(1000000000000000000));

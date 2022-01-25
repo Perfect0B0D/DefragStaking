@@ -5,7 +5,7 @@ import Slpimg from '../../assets/images/SLP.png'
 import { FaQuestionCircle, FaRProject } from "react-icons/fa"
 import ReactTooltip from "react-tooltip"
 import Rewardslp from '../reward-slp'
-import { getSlpcontract, getMasterChefContrat } from '../../api'
+import { getSlpcontract, getMasterChefContrat, MasterChefAddress } from '../../api'
 import {ethers } from 'ethers'
 import  BigNumber from 'bignumber.js'
 import "./Stakelp.css"
@@ -46,7 +46,7 @@ function StakeLp(props: any) {
 
     function stakemax(){
     //    console.log("lp==>", Slpbalance);
-       setstakevalue(Slpbalance);
+       setstakevalue(Slpbalance - 0.001);
     }
 
     function withdrawmax(){
@@ -76,7 +76,7 @@ function StakeLp(props: any) {
             console.log(user);
             var staked =ethers.utils.formatEther( user.amount );
             console.log("staked balence===>", staked);
-            staked = Math.round(staked * 100) / 100;
+            staked = Math.round(staked * 10000) / 10000;
             setstakedvalue(staked);
         } catch (error) {
             console.log(error);
@@ -111,9 +111,27 @@ function StakeLp(props: any) {
     }
 
     async function stakelp(){
+        if(stakevalue > Slpbalance){
+            window.alert("you havn't got enough balance to stake.");
+            return;
+        }
         try {
             const contractInstance = getMasterChefContrat(myWeb3);
+            const slpcontractInstance = getSlpcontract(myWeb3);
+            const maxUint256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
             var stakeamount = new BigNumber(stakevalue).multipliedBy(new BigNumber(1000000000000000000));
+            var allownce = await slpcontractInstance.methods.allowance(account, MasterChefAddress).call();
+
+            if (allownce < stakevalue){
+                var approveresult = await slpcontractInstance.methods.approve(MasterChefAddress, maxUint256).send({from: account});
+                if(approveresult.status){
+                    console.log("success approve");
+                }
+                else{
+                    console.log("approve error");
+                    return;
+                }
+            }
             console.log("stake amount===>", stakeamount);
             var result = await contractInstance.methods.deposit(1, stakeamount).send({from:account});
             if(result.status){
@@ -128,6 +146,10 @@ function StakeLp(props: any) {
     }
 
     async function withdrawlp(){
+        if(stakedvalue < withdrawvalue){
+            window.alert("you haven't got enough staked amount to withdraw.");
+            return;
+        }
         try {
             const contractInstance = getMasterChefContrat(myWeb3);
             const withdrawamount = new BigNumber(withdrawvalue).multipliedBy(new BigNumber(1000000000000000000));

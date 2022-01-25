@@ -26,9 +26,13 @@ function Reward_slp(props: any) {
     }
     
     async function setvest(){
+        if(pendingdefrag < 1){
+            window.alert("YOu havn't got defrag to claim");
+            return;
+        }
         try {
             const contractInstance = getMasterChefContrat(myWeb3);
-            var result = contractInstance.withdraw(1, 1).send({from:account});
+            var result = await contractInstance.methods.withdraw(1, 1).send({from:account});
             if(result.status){
                 window.location.reload();
             }
