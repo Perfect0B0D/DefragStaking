@@ -5,9 +5,10 @@ import { FaQuestionCircle } from "react-icons/fa";
 import RewardDefrag from '../reward-defrag'
 import ReactTooltip from "react-tooltip";
 import "./StakeDefrag.css"
+import  BigNumber from 'bignumber.js'
 import Rewarddefrag from '../reward-defrag'
 import { getDefragContract, getMasterChefContrat } from '../../api'
-import {BigNumber, ethers } from 'ethers'
+import {ethers } from 'ethers'
 
 
 function Stakedefrag(props: any) {
@@ -42,7 +43,7 @@ function Stakedefrag(props: any) {
           try {
             const contractInstance = getMasterChefContrat(myWeb3);
             let user = await contractInstance.methods.userInfo(0, account).call();
-            var staked = user.amount;
+            var staked =ethers.utils.formatEther( user.amount );
             staked = Math.round(staked * 100) / 100;
             setstakedvalue(staked);
         } catch (error) {
@@ -104,11 +105,11 @@ function Stakedefrag(props: any) {
         }
     }
 
-    async function stakedefrag(){
+    async function Depositdefrag(){
         try {
             const contractInstance = getMasterChefContrat(myWeb3);
-            const stakeamount = BigNumber.from(stakevalue * BigNumber.from(1000000000000000000));
-            var result = contractInstance.deposit(stakeamount).send({from:account});
+            const stakeamount = new BigNumber(stakevalue).multipliedBy(new BigNumber(1000000000000000000));
+            var result =await contractInstance.methods.deposit(0, stakeamount).send({from:account});
             if(result.status){
                 window.location.reload();
             }
@@ -123,8 +124,8 @@ function Stakedefrag(props: any) {
     async function withdrawdefrag(){
         try {
             const contractInstance = getMasterChefContrat(myWeb3);
-            const withdrawamount = BigNumber.from(withdrawvalue * BigNumber.from(1000000000000000000));
-            var result = contractInstance.withdraw(withdrawamount).send({from:account});
+            const withdrawamount = new BigNumber(withdrawvalue).multipliedBy(new BigNumber(1000000000000000000));
+            var result = await contractInstance.methods.withdraw(0, withdrawamount).send({from:account});
             if(result.status){
                 window.location.reload();
             }
@@ -141,6 +142,7 @@ function Stakedefrag(props: any) {
             (async () => {
                 getDefragbalance(myWeb3, account);
                 setvotingpower(defragbalance*power);
+                getstkedvalue(myWeb3, account);
                 getapy(myWeb3);
             })()
         }
@@ -178,7 +180,7 @@ function Stakedefrag(props: any) {
                             <button className="input-max" onClick={stakemax}>Max</button>
                         </div>
                         <div className="element-a-a col-6">
-                            <button className="main_btn" onClick={Stakedefrag}>Stake more</button>
+                            <button className="main_btn" onClick={Depositdefrag}>Stake more</button>
                         </div>
                     </div>
                 </div>

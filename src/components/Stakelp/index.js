@@ -74,7 +74,7 @@ function StakeLp(props: any) {
             const contractInstance = getMasterChefContrat(myWeb3);
             let user = await contractInstance.methods.userInfo(1, account).call();
             console.log(user);
-            var staked = user.amount;
+            var staked =ethers.utils.formatEther( user.amount );
             console.log("staked balence===>", staked);
             staked = Math.round(staked * 100) / 100;
             setstakedvalue(staked);
@@ -130,8 +130,8 @@ function StakeLp(props: any) {
     async function withdrawlp(){
         try {
             const contractInstance = getMasterChefContrat(myWeb3);
-            const withdrawamount = BigNumber.from(withdrawvalue * BigNumber.from(1000000000000000000));
-            var result = contractInstance.withdraw(withdrawamount).send({from:account});
+            const withdrawamount = new BigNumber(withdrawvalue).multipliedBy(new BigNumber(1000000000000000000));
+            var result = await contractInstance.methods.withdraw(1, withdrawamount).send({from:account});
             if(result.status){
                 window.location.reload();
             }
