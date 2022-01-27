@@ -42,7 +42,7 @@ a:hover{
   height: 70px;
   background-color: black;
   display: flex;
-  justify-content: space-between;
+  justify-content: end;
 }
 
 .welcome-header {

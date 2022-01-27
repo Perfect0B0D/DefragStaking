@@ -588,6 +588,19 @@
         "type": "function"
     },
     {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_startBlock",
+                "type": "uint256"
+            }
+        ],
+        "name": "setstartblock",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "inputs": [],
         "name": "startBlock",
         "outputs": [
@@ -695,6 +708,11 @@
                 "internalType": "uint256",
                 "name": "amount",
                 "type": "uint256"
+            },
+            {
+                "internalType": "bool",
+                "name": "claimed",
+                "type": "bool"
             }
         ],
         "stateMutability": "view",
@@ -723,6 +741,25 @@
             {
                 "internalType": "uint256",
                 "name": "rewardDebt",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "userallocationlength",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
                 "type": "uint256"
             }
         ],

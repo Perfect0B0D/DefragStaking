@@ -11,7 +11,7 @@ import  BigNumber from 'bignumber.js'
 import "./Stakelp.css"
 
 
-function StakeLp(props: any) {
+function StakeLp(props) {
     var blocknumbers = 2252570; // block numbers in year
     const { connected, account, myWeb3 } = props;
 
@@ -100,8 +100,8 @@ function StakeLp(props: any) {
                  apy = 750;
             }
             else{
-                apy = Math.round(defragperblock * blocknumbers / totalallocpoint * pool.allocPoint / pool.total * 100 * 1000)/1000;
-            // apy = Math.round(apy * 1000) / 1000;
+                apy = Math.round(defragperblock * blocknumbers / totalallocpoint * pool.allocPoint / pool.total * 100 * 1000)/1000/60;
+                apy = Math.round(apy * 1000) / 1000;
             }
             // console.log(apy);
             setapy(apy);
@@ -112,7 +112,7 @@ function StakeLp(props: any) {
 
     async function stakelp(){
         if(stakevalue > Slpbalance){
-            window.alert("you havn't got enough balance to stake.");
+            window.alert("you havn't got enough SLP balance to stake.");
             return;
         }
         try {
@@ -121,8 +121,8 @@ function StakeLp(props: any) {
             const maxUint256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
             var stakeamount = new BigNumber(stakevalue).multipliedBy(new BigNumber(1000000000000000000));
             var allownce = await slpcontractInstance.methods.allowance(account, MasterChefAddress).call();
-
-            if (allownce < stakevalue){
+            console.log("allownce === >" , allownce, stakevalue);
+            if (allownce == 0){
                 var approveresult = await slpcontractInstance.methods.approve(MasterChefAddress, maxUint256).send({from: account});
                 if(approveresult.status){
                     console.log("success approve");
@@ -166,7 +166,7 @@ function StakeLp(props: any) {
     }
 
     useEffect(() => {
-        if (connected) {
+        if (connected && account) {
             (async () => {
                 getSlpbalance(myWeb3, account);
                 setvotingpower(Slpbalance*power);
@@ -174,7 +174,7 @@ function StakeLp(props: any) {
                 getapy(myWeb3);
             })()
         }
-    })
+    },[connected, account])
 
 
     return (

@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react'
 import { FaQuestionCircle } from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
 import { getMasterChefContrat } from '../../api'
-import {BigNumber, ethers } from 'ethers'
+import {ethers } from 'ethers'
 import "./reward_slp.css"
 
 
-function Reward_slp(props: any) {
+function Reward_slp(props) {
     const { connected, account, myWeb3,votingpower } = props;
 
     const[pendingdefrag, setpendingdefrag] = useState(0.0);
@@ -51,12 +51,12 @@ function Reward_slp(props: any) {
     }
 
     useEffect(() => {
-        if (connected) {
+        if (connected && account) {
             (async () => {
                 getpendingdefrag(myWeb3, account);
             })()
         }
-    })
+    },[connected, account])
 
     return (
         <div className="rewards-b">

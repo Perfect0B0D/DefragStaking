@@ -9,8 +9,11 @@ const chainhex="0x61";
 const chainId = 97;
 
 const DefragAddress = "0x19E639dc82f859F2a20a9F558eAefeE0b75e31DC";
-const MasterChefAddress = "0xe89510118e5b51ad0CA8DF489864Dc76F5BE3e1E";
-const SLPAddress = "0x659b70968cc40b961688e589712c974330ebeabb";
+const MasterChefAddress = "0xC63E0f8d36ef9100BFB26f60b284ffab363727cc";
+const SLPAddress = "0x659B70968Cc40b961688E589712c974330EbEaBb";
+//0xe89510118e5b51ad0CA8DF489864Dc76F5BE3e1E
+//const MasterChefAddress = "0x38a3Ec5f8D773FaA6BC6A83eB029Fc24A5C997aF";
+
 export {
   http,
   chainId,

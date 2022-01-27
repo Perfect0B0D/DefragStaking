@@ -8,7 +8,7 @@ import {BigNumber, ethers } from 'ethers';
 
 
 
-function Reward_defrag(props: any) {
+function Reward_defrag(props) {
     const { connected, account, myWeb3,votingpower } = props;
 
 
@@ -53,12 +53,12 @@ function Reward_defrag(props: any) {
     }
 
     useEffect(() => {
-        if (connected) {
+        if (connected && account) {
             (async () => {
                 getpendingdefrag(myWeb3, account);
             })()
         }
-    })
+    },[connected, account])
 
 
     return (

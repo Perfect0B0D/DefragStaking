@@ -47,6 +47,17 @@
     justify-content: space-between;
 }
 
+.claim{
+    border: solid 2px gray;
+    background-color: #23b2ef;
+    width: 50%;
+    font-size: xx-small;
+}
+.claim:hover{
+    border: solid 2px rgb(148, 51, 51);
+    background-color: #23ca23;
+}
+
 img{
     /* background-color: #3182ce; */
     border-radius: 10%;
@@ -56,8 +67,6 @@ img{
     display: flex;
     flex-direction: row;
     background-color: var(--gray-1);
-    padding: -1.5em;
-    margin: 1.5em;
     border-radius: 20px;
     align-items: center;
     justify-content: space-between;
@@ -106,10 +115,31 @@ span{
     fill: #000;
     stroke: #000;
   }
+
+  .seeschedule{
+    font-size: xx-small;
+    font-weight: 700;
+    font-family: system-ui;
+    background-color: #23b2ef;
+  }
+  
+  .seeschedule:hover{
+    background-color: #23ca23 !important;
+    border: solid 2px rgb(148, 51, 51);
+    
+  }
+  .Lockicon{
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 100%;
+    background-color: rgb(227, 235, 6);
+    padding: 0.5rem;
+    margin: 2px;
+  }
   
   .icon svg { 
-    --size: 3em;
-    
+    --size: 1em;
+    margin-right: 10px;
     fill: inherit;
     min-height: var(--size);
     min-width:  var(--size);
@@ -156,6 +186,50 @@ span{
     color: var(--black);
 }
 
+.modal-header {
+   
+    border-bottom: 0px solid #dee2e6 !important;
+  
+}
+
+.claimainbtn{
+    width: 30%;
+    margin-left: 70%;
+    background-color: #3182ce;
+    margin-bottom: 20px;
+}
+
+.claimlist1{
+    background-color: '#dbdcdd' !important;
+    align-items: 'center';
+}
+
+.modalmainbody{
+    border-bottom: 1px solid #6d7c8b;
+    padding-bottom: 0.3rem;
+}
+
+.modalsub1{
+
+}
+
+.modalsub2{
+    
+}
+
+.modalsub3{
+    
+}
+
+.modal-body {
+    padding-top: 0rem !important;
+    padding-bottom: 1rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    display: flex;
+    flex-direction: column;
+    /* padding: 1rem; */
+}
 
 @media (max-width: 768px) {
     .rewards-a {
@@ -165,4 +239,21 @@ span{
     .rewards-a .particular {
         margin-top: 1em;
     }
+    .reward-a-1{
+        width: 100% !important;
+        margin-top:15px;
+        margin-bottom: 10px;
+    }
+    .reward-a-2{
+        width: 100% !important;
+        margin-top:10px;
+        margin-bottom: 15px;
+    }
+
+}
+
+@media (min-width: 576px){
+.modal-dialog {
+    max-width: 70% !important;
+}
 }

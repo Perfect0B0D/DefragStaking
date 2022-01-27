@@ -11,7 +11,7 @@ import { getDefragContract, getMasterChefContrat, MasterChefAddress } from '../.
 import {ethers } from 'ethers'
 
 
-function Stakedefrag(props: any) {
+function Stakedefrag(props) {
     var blocknumbers = 2252570; // block numbers in year
     const { connected, account, myWeb3 } = props;
 
@@ -115,7 +115,8 @@ function Stakedefrag(props: any) {
             const defragcontract = getDefragContract(myWeb3);
             const maxUint256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
             var allownce = await defragcontract.methods.allowance(account, MasterChefAddress).call();
-            if (allownce < stakevalue){
+            console.log("allownce === >" , allownce, stakevalue);
+            if (allownce == 0){
                 var approveresult = await defragcontract.methods.approve(MasterChefAddress, maxUint256).send({from: account});
                 if(approveresult.status){
                     console.log("success approve");
@@ -159,7 +160,7 @@ function Stakedefrag(props: any) {
     }
 
     useEffect(() => {
-        if (connected) {
+        if (connected && account) {
             (async () => {
                 getDefragbalance(myWeb3, account);
                 setvotingpower(defragbalance*power);
@@ -167,7 +168,7 @@ function Stakedefrag(props: any) {
                 getapy(myWeb3);
             })()
         }
-    })
+    },[connected, account])
 
     return (
         <div className="stake-a">

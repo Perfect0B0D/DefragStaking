@@ -2,17 +2,16 @@ import React, { useEffect, useState } from "react";
 import Bottom from './components/bottom'
 import { chainhex, chainId } from "./config/site.config";
 import Web3 from "web3"
-import { web3_modal} from "./api";
+import { web3_modal } from "./api";
 import Stake from './components/stake';
-import Vestingreward from "./components/vestingreward";
 import "./App.css";
-import {Route, Switch, Router, Link } from 'react-router-dom';
+import { Route, Switch, Router, Link } from 'react-router-dom';
 
 
 
 function App() {
 
- 
+
 
   const [myWeb3, setMyWeb3] = useState(null);
   const [account, setAccount] = useState('');
@@ -20,19 +19,19 @@ function App() {
 
   const detectEthereumNetwork = (callback) => {
     window.ethereum.request({ method: 'eth_chainId' }).then(async (cId) => {
-        if (parseInt(cId) != chainId) { // bsc testnet
-          window.ethereum.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: chainhex }], // chainId must be in hexadecimal numbers
-          }).then(()=>{
-              return callback();
-          })
-        }else{
-            return callback();
-        }
+      if (parseInt(cId) != chainId) { // bsc testnet
+        window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: chainhex }], // chainId must be in hexadecimal numbers
+        }).then(() => {
+          return callback();
+        })
+      } else {
+        return callback();
+      }
     });
   }
-  
+
 
   const connect = async () => {
     if (account !== '') {
@@ -43,25 +42,26 @@ function App() {
       setTimeout(() => {
         window.location.reload();
       }, 1);
-      
+
     }
     else {
-        detectEthereumNetwork(async () => {
-          let provider = null;
+      detectEthereumNetwork(async () => {
+        let provider = null;
         try {
-           provider = await web3_modal.connect();
+          provider = await web3_modal.connect();
         } catch (error) {
           console.log(error);
           window.location.reload();
-          return;   
+          return;
         }
         if (!provider.on) {
           return;
         }
-        
+
         provider.on('accountsChanged', async () => {
           // console.log("accountchange");
-          setTimeout(() => window.location.reload(), 1)});
+          setTimeout(() => window.location.reload(), 1)
+        });
 
         provider.on('chainChanged', async (cid) => {
           if (parseInt(cid) !== chainId) {
@@ -75,7 +75,7 @@ function App() {
           if (!oldNetwork) return;
           window.location.reload();
         });
-        
+
 
         await web3_modal.toggleModal();
         // provider.
@@ -83,7 +83,7 @@ function App() {
         // console.log("1");
         const web3 = new Web3(provider);
         // console.log("2");
-        if(web3){
+        if (web3) {
           // console.log("3");
           setMyWeb3(web3);
           const accounts = await web3.eth.getAccounts();
@@ -98,36 +98,36 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      if(myWeb3){
-        setconnect(true);   
-      }else{
+      if (myWeb3) {
+        setconnect(true);
+      } else {
         console.log("not connect");
       }
     })()
   }, [account, myWeb3])
   return (
-      <div className="main">
+    <div className="main">
       <div className="header">
-      <nav>
-              <Link to="/">Stakeing</Link>
-              <Link to="/vest">vesting</Link>
-        </nav>
+        {/* <nav>
+          <Link to="/">Stakeing</Link>
+          <Link to="/vest">vesting</Link>
+        </nav> */}
         <button className="my-btn connect-btn" onClick={() => connect()}>
           <div className="connect-btn-text">
-            {account===""?"Connect to metamask":account}
+            {account === "" ? "Connect to metamask" : account}
           </div>
         </button>
       </div>
-      
 
-      <Switch>
-        <Route exact path='/'>
+
+      {/* <Switch>
+        <Route exact path='/'> */}
           <Stake connected={connected} account={account} myWeb3={myWeb3} />
-        </Route>
-        <Route exact path='/vest'>
-          <Vestingreward connected={connected} account={account} myWeb3={myWeb3}/>
-        </Route>
-      </Switch>
+        {/* </Route> */}
+        {/* <Route  path='/vest'> */}
+          {/* <Vestingreward connected={connected} account={account} myWeb3={myWeb3} /> */}
+        {/* </Route>
+      </Switch> */}
 
       <Bottom />
     </div>

@@ -6,7 +6,7 @@ import "./stake.css";
 
 
 
-function Stake(props: any) {
+function Stake(props) {
 
 const {connected, account, myWeb3} = props;
  

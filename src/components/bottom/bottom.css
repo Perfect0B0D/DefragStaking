@@ -21,6 +21,10 @@
   .wrapper {
     display: table-cell;
     vertical-align: middle;
+  
+  }
+  .footer-nav{
+    width: 80% !important;
   }
   
   footer small {

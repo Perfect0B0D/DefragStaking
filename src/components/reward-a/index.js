@@ -4,30 +4,40 @@ import metamaskimg from '../../assets/images/metamask.png'
 import viewcontractimg from '../../assets/images/view-contract.png'
 import pancakeimg from '../../assets/images/pancake.png'
 import { FaCreditCard } from "react-icons/fa";
+import { FaWindowClose } from "react-icons/fa"
+import { FaUnlockAlt } from "react-icons/fa";
+import { Modal, Button } from "react-bootstrap";
 import "./reward_a.css"
 import { getDefragContract, getMasterChefContrat } from '../../api'
 import { ethers } from 'ethers'
 
-function Reward_a(props: any) {
+function Reward_a(props) {
 
     const { connected, account, myWeb3 } = props;
-    // const Collapse = window.Collapse;
-    // const cx = window.classNames;
-    // const [isOpen, setIsOpen] = useState(false);
-    // const onToggle = () => setIsOpen(s => !s);
-    const[pendingdefrag, setpendingdefrag] = useState(0.0);
+    console.log(account);
+
+    const [Modalopen, setOpen] = useState(false);
+    const [pendingdefrag, setpendingdefrag] = useState(0.0);
     const [rewardssubmenuflag, setsubflag] = useState(false);
     const [Defragbalence, SetTokenBalence] = useState(0);
     const [Defragprice, SetDefragprice] = useState(0);
     const [totalusdprice, SetTotalusdprice] = useState(0);
+    const [userallocation, SetUserallocation] = useState([]);
+    const [useraloclength, SetUserAlloclength] = useState(0);
+    const [useralocid, SetuserAllocIds] = useState([]);
+    const [userclaimablelength, SetUserCbLength] = useState([0]);
+
+
     const onToggle = () => setsubflag(s => !s);
+    const allocmodalopen = () => setOpen(true);
+    const allocmodalclose = () => setOpen(false);
 
     function buyDefrag() {
         window.open('https://pancakeswap.finance/swap?inputCurrency=&outputCurrency=0xfd5840cd36d94d7229439859c0112a4185bc0255', '_blank');
     }
 
     function viewDefrag() {
-        
+
         window.open('https://testnet.bscscan.com/address/0x19E639dc82f859F2a20a9F558eAefeE0b75e31DC', '_blank');
 
     }
@@ -40,7 +50,7 @@ function Reward_a(props: any) {
                 params: {
                     type: 'ERC20', // Initially only supports ERC20, but eventually more!
                     options: {
-                        address: "0x981f0Ed8bFA27B96B11BE6ced34d876464AEe6f5", // The address that the token is at.
+                        address: "0x19E639dc82f859F2a20a9F558eAefeE0b75e31DC", // The address that the token is at.
                         symbol: "Defrag", // A ticker symbol or shorthand, up to 5 chars.
                         decimals: 18, // The number of decimals in the token
                     },
@@ -56,6 +66,78 @@ function Reward_a(props: any) {
             console.log(error);
         }
     }
+    
+    async function allclaim(myWeb3, account){
+   
+    }
+
+    async function claim(alloc_id){
+        try {
+            const contractInstance = getMasterChefContrat(myWeb3);
+            var result = await contractInstance.methods.release(account, alloc_id).send({from: account});
+            if(result.status){
+                window.location.reload();
+            }
+            else{
+                alert("Stake error");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function getuserAllocation(myWeb3, account) {
+        try {
+            const contractInstance = getMasterChefContrat(myWeb3)
+            let useraloc = [];
+            let useraloc_id = [];
+            let userclaimablelength = 0;
+            console.log("aloclength==>", useraloclength);
+            for (var i = 0; i < useraloclength; i++) {
+                let tmpuseraloc = await contractInstance.methods.userAllocations(account, i).call();
+                const date = new Date(parseInt(tmpuseraloc.start) * 1000)
+                // console.log("tmpuseraloc.start==>", tmpuseraloc.start)
+                // console.log("Date: " + date.getDate() +
+                //     "/" + (date.getMonth() + 1) +
+                //     "/" + date.getFullYear() +
+                //     " " + date.getHours() +
+                //     ":" + date.getMinutes() +
+                //     ":" + date.getSeconds());
+                var today = new Date();
+                console.log("today", today);
+                var different_month = (today.getFullYear() - date.getFullYear()) * 12 + (today.getMonth() - date.getMonth());
+                var claimable;
+                var current_timestamp = Math.round(new Date().getTime() / 1000)
+                console.log("current_timestamp,tmpuseraloc.start", current_timestamp,tmpuseraloc.start);
+                if ((current_timestamp - parseInt(tmpuseraloc.start)) > 78000) { claimable = true; } else { claimable = false }
+
+                var end_time = new Date((parseInt(tmpuseraloc.start) + 78000) * 1000);
+                var rest_time = (parseInt(tmpuseraloc.start) + 78000) - current_timestamp;
+                var day_flag = true;
+                rest_time /= (3600*24);
+                if(rest_time < 1){day_flag = false; rest_time = Math.round((rest_time) * 24)}else{
+                    rest_time = Math.round(rest_time);
+                }
+                if(claimable){
+                    useraloc_id.push(i);
+                    userclaimablelength++;
+                }
+                var new_data = { aloc_id: i, claimable: claimable,day_flag: day_flag, rest_time:rest_time, end_time: end_time, start: date, amount: tmpuseraloc.amount, claimed: tmpuseraloc.claimed, different_month: different_month }
+                useraloc.push(new_data);
+            }
+            await SetUserallocation(useraloc);
+            await SetuserAllocIds(useraloc_id);
+            await SetUserCbLength(userclaimablelength);
+            console.log("useralloc==>", userallocation);
+
+        } catch (error) {
+            console.log(error);
+            return;
+        }
+    }
+
+
+
     async function getDefragbalence(myWeb3, account) {
         try {
             const contractInstance = getDefragContract(myWeb3);
@@ -70,76 +152,94 @@ function Reward_a(props: any) {
         }
     }
 
-    async function getpendingdefrag(myWeb3, account){
-        try{
+    async function getpendingdefrag(myWeb3, account) {
+        try {
             const contractInstance = getMasterChefContrat(myWeb3);
-            // console.log(contractInstance);
-            // console.log("account====>", account);
             let res = ethers.utils.formatEther(await contractInstance.methods.totalPendingRewards(account).call());
+            let useralocl = await contractInstance.methods.userallocationlength(account).call();
+            console.log("total pending defrag to vest===>", res);
+            console.log("leg===>", useralocl);
             res = Math.round(res * 1000) / 1000;
+            let totalusdpendingprice = Math.round(res * Defragprice * 100) / 100;
             setpendingdefrag(res);
-            SetTotalusdprice(res*Defragprice);
-        } catch (error){
+            SetTotalusdprice(totalusdpendingprice);
+            await SetUserAlloclength(useralocl);
+        } catch (error) {
             console.log(error);
         }
     }
 
     async function getDefragprice() {
         fetch("https://api.pancakeswap.info/api/v2/tokens/0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82")
-          .then(res => res.json())
-          .then(
-            (result) => {
-            //   console.log(result.data.price)
-              const price = Math.round(result.data.price * 1000000)/1000000;
-              SetDefragprice(price);
-            },
-            (error) => {
-              console.log(error);
-            }
-          )
-      }
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    //   console.log(result.data.price)
+                    const price = Math.round(result.data.price * 1000000) / 1000000;
+                    SetDefragprice(price);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            )
+    }
 
-    useEffect(() => {
-        (async () => {
-            getDefragprice();
-            console.log("connected===>", connected);
-        })()
-    }, [connected])
 
-    useEffect(() => {
-        if (connected) {
-            (async () => {
-                getDefragbalence(myWeb3, account);
-                getpendingdefrag(myWeb3, account);
-            })()
+    useEffect(async () => {
+        if (connected && account) {
+
+            await getDefragbalence(myWeb3, account);
+            await getpendingdefrag(myWeb3, account);
+            await getuserAllocation(myWeb3, account);
         }
-    })
+        await getDefragprice();
+        console.log("connected===>", connected);
+
+    }, [connected, account, useraloclength])
+
+    // useEffect(() => {
+
+    // })
 
     return (
         <>
             {connected ?
                 <div className="rewards row">
-                    <div className="rewards-a col-lg-6 col-sm-10">
-                        <div className="title-container"><b className="title_element">Unclaimed Defrag to Vest</b></div>
-                        <div className="particular">
-                            <div className="ammount">{pendingdefrag} DEFRAG</div>
-                            <small className="subtitle">Total</small>
+                    <div className="rewards-a col-lg-7 col-sm-10">
+                        <div className="reward-a-1" style={{ display: 'flex', alignItems: 'center', width: '50%' }}>
+                            <div>
+                                <img src={defragimg} style={{ height: '4rem', fontSize: 'xxx-large' }}></img>
+                            </div>
+                            <div>
+                                <span className="unclaimtxt">Unclaimed DEFRAG to vest</span>
+                                <div>{console.log("here ==>", userallocation)}
+                                    <span style={{ fontSize: '25px' }}>{pendingdefrag}</span>
+                                    <span style={{ fontSize: '15px' }}>Defrag ~ ${totalusdprice}</span>
+                                </div>
+                            </div>
                         </div>
-                        <div className="particular">
-                            <div className="ammount">{totalusdprice}</div>
-                            <small className="subtitle">USD Total</small>
-                        </div>
+                        <div className="reward-a-2" style={{ display: 'flex', alignItems: 'center', width: '50%' }}>
+                            <div>
+                                <FaUnlockAlt className="Lockicon" />
+                            </div>
+                            <div style={{ width: '70%' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <span className="unclaimtxt">Vesting Defrag</span>
+                                    {useraloclength > 0 && <button className="seeschedule" style={{ fontSize: 'xx-small', fontWeight: '700', fontFamily: 'system-ui', backgroundColor: '#23b2ef' }} onClick={allocmodalopen}>see schedule</button>}
+                                </div>
+                                <div>
+                                    <span style={{ fontSize: '25px' }}>{pendingdefrag}</span>
+                                    <span style={{ fontSize: '15px' }}>Defrag ~ $100</span>
+                                </div>
+                            </div>
 
-                        <div className="particular">
-                            <div className="ammount">{Defragprice}</div>
-                            <small className="subtitle">DEFRAG Current price</small>
                         </div>
 
                     </div>
-                    <div className="col-lg-4 col-sm-10 rewards-X-I">
+                    <div className="col-lg-3 col-sm-10 rewards-X-I">
                         <div className="rewards-X">
-                            <img src={defragimg} style={{ height: '4rem', fontSize: 'xxx-large' }}></img>
-                            <span>{Defragprice}</span>
+                            <img src={defragimg} style={{ height: '4rem', backgroundColor: '#23b2ef', fontSize: 'xxx-large' }}></img>
+                            <span>${Defragprice}</span>
                             <span className="icon" style={{ float: 'left' }} onClick={onToggle}>
                                 <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M455,113a15,15 0 01 19,0l29,29a15,15 0 01 0,19l-235,236a16,16 0 01-24,0l-235-236a15,15 0 01 0-19l29-29a15,15 0 01 19,0l199,199z" />
@@ -180,7 +280,67 @@ function Reward_a(props: any) {
                 </div>
                 : <div className="rewards-a walletnotconnect">
                     <span style={{ fontSize: '30px', fontWeight: '300' }}>Wallet Not connect</span>
-                </div>}
+                </div>
+            }
+            <Modal show={Modalopen} onHide={allocmodalclose}>
+                <Modal.Header>
+                    <div style={{ display: 'flex', alignItems: 'center', width: '80%' }}>
+                        <div>
+                            <FaUnlockAlt className="Lockicon" />
+                        </div>
+                        <div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <span className="unclaimtxt">Total Vesting</span>
+                            </div>
+                            <div>
+                                <span style={{ fontSize: '25px' }}>{pendingdefrag}</span>
+                                <span style={{ fontSize: '15px' }}>Defrag ~ $100</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style={{ paddingBottom: '50px' }}>
+                        <FaWindowClose onClick={allocmodalclose} />
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <span style={{ fontWeight: '200' }}>Defrag rewards are vested on a 6-month waterfall. This means your rewards will be available to claim 6-months after they're vested.</span>
+                  {  userclaimablelength > 0 && <button className="claimainbtn" onClick={allclaim}>Claim All  {userclaimablelength} &nbsp; Now</button>}
+                    <div className="modalmainbody row">
+                        <div className="modalsub1 col-4">
+                            <span>vesting Amount</span>
+                        </div>
+                        <div className="modalsub2 col-4">
+                            <span>started vestomg</span>
+                        </div>
+                        <div className="modalsub3 col-4">
+                            <span>Claimable all</span>
+                        </div>
+                    </div>
+                    {userallocation.map((obj, key) => (
+                        !obj.claimed && <div className="row" style={key % 2 === 0 ? { alignItems: 'center', backgroundColor: '#dbdcdd' } : { alignItems: 'center' }}>
+                            <div className="col-4">
+                                <span style={{ fontWeight: '500' }}>{Math.round(obj.amount / 10 ** 16) * 100}</span><span style={{ fontSize: '10px', fontWeight: '300', paddingLeft: '5px' }}>Defrag</span>
+                            </div>
+                            <div className="col-4" style={{ display: 'flex', flexDirection: 'column' }}>
+                                <span style={{ fontWeight: '500', alignSelf: 'start' }}>{obj.start.getMonth() + 1}/{obj.start.getDate()}/{obj.start.getFullYear()}</span>
+                                <span style={{ fontSize: '10px', fontWeight: '300', alignSelf: 'start' }}>{obj.different_month} months ago</span>
+                            </div>
+                            <div className="col-4"  style={obj.claimable ? { paddingLeft: '10px'}:{}}>
+                                {obj.claimable ? <button style={{ backgroundColor: '#3182ce', fontSize: '10px' }} onClick={()=>claim(obj.aloc_id)}>Claim now</button> :
+                                    <div style={{ display: 'flex', flexDirection: 'column'  }}>
+                                       <span style={{ fontWeight: '500', alignSelf: 'start' }}>{obj.end_time.getMonth() + 1}/{obj.end_time.getDate()}/{obj.end_time.getFullYear()}</span>
+                                       {obj.day_flag?<span style={{ fontSize: '10px', fontWeight: '300', alignSelf: 'start' }}>in &nbsp; {obj.rest_time} days </span> :
+                                       <span style={{ fontSize: '10px', fontWeight: '300', alignSelf: 'start' }}>in &nbsp; {obj.rest_time} hours </span> }
+                                    </div>}
+                            </div>
+                        </div>
+                    ))}
+
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" style={{ backgroundColor: '#3182ce' }} onClick={allocmodalclose}>Close</Button>
+                </Modal.Footer>
+            </Modal>
         </>
     )
 }
