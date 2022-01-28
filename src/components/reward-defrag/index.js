@@ -19,8 +19,9 @@ function Reward_defrag(props) {
             const contractInstance = getMasterChefContrat(myWeb3);
             // console.log(contractInstance);
             // console.log("account====>", account);
-            let res = ethers.utils.formatEther(await contractInstance.methods.pendingdefrag(0,account).call());
-            res = Math.round(res * 1000) / 1000;
+            let res = ethers.utils.formatEther(await contractInstance.methods.pendingdefrag(0, account).call());
+            res = Math.round(res * 100000) / 100000;
+            console.log(" setpendingdefrag(res);",res);
             setpendingdefrag(res);
         } catch (error){
             console.log(error);
@@ -55,7 +56,7 @@ function Reward_defrag(props) {
     useEffect(() => {
         if (connected && account) {
             (async () => {
-                getpendingdefrag(myWeb3, account);
+                await getpendingdefrag(myWeb3, account);
             })()
         }
     },[connected, account])
@@ -70,7 +71,7 @@ function Reward_defrag(props) {
                         <span>Unclaimed Rewards</span>
                     </div>
                     <div className="body_container">
-                        <div className="ammount">{pendingdefrag} DEFRAG</div>
+                        <div className="ammount">{console.log("pendingdefrag,",pendingdefrag)}{pendingdefrag} DEFRAG</div>
                         <div className="subtitle">
                             <button className="main_btn" onClick={setvest}>vest rewards</button>
                             <span>Vests on 6-month waterfall <FaQuestionCircle style={{ height: '1rem', fontSize: 'xxx-small' }} data-tip data-for="vestquestiontip" /></span>

@@ -17,6 +17,7 @@ function Reward_a(props) {
     console.log(account);
 
     const [Modalopen, setOpen] = useState(false);
+    const [pendingamount, setPendingAmount] = useState(0);
     const [pendingdefrag, setpendingdefrag] = useState(0.0);
     const [rewardssubmenuflag, setsubflag] = useState(false);
     const [Defragbalence, SetTokenBalence] = useState(0);
@@ -25,6 +26,7 @@ function Reward_a(props) {
     const [userallocation, SetUserallocation] = useState([]);
     const [useraloclength, SetUserAlloclength] = useState(0);
     const [useralocid, SetuserAllocIds] = useState([]);
+    const [useralocclaimableid, SetuserClaimableAllocIds] = useState([]);
     const [userclaimablelength, SetUserCbLength] = useState([0]);
 
 
@@ -66,20 +68,33 @@ function Reward_a(props) {
             console.log(error);
         }
     }
-    
-    async function allclaim(myWeb3, account){
-   
-    }
 
-    async function claim(alloc_id){
+    async function allclaim() {
         try {
+            console.log("useralocclaimableid",useralocclaimableid);
             const contractInstance = getMasterChefContrat(myWeb3);
-            var result = await contractInstance.methods.release(account, alloc_id).send({from: account});
-            if(result.status){
+            console.log("contractInstance",contractInstance);
+            var result = await contractInstance.methods.releaseMultiple(account, useralocclaimableid).send({ from: account });
+            if (result.status) {
                 window.location.reload();
             }
-            else{
-                alert("Stake error");
+            else {
+                alert("claim error");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function claim(alloc_id) {
+        try {
+            const contractInstance = getMasterChefContrat(myWeb3);
+            var result = await contractInstance.methods.release(account, alloc_id).send({ from: account });
+            if (result.status) {
+                window.location.reload();
+            }
+            else {
+                alert("claim error");
             }
         } catch (error) {
             console.log(error);
@@ -90,11 +105,17 @@ function Reward_a(props) {
         try {
             const contractInstance = getMasterChefContrat(myWeb3)
             let useraloc = [];
+            let userclaimalbleid = [];
             let useraloc_id = [];
             let userclaimablelength = 0;
+            let duration = await contractInstance.methods.vestduration().call();
+            console.log("duration", duration);
             console.log("aloclength==>", useraloclength);
             for (var i = 0; i < useraloclength; i++) {
                 let tmpuseraloc = await contractInstance.methods.userAllocations(account, i).call();
+                if (!tmpuseraloc.claimed) {
+                    useraloc_id.push(i);
+                }
                 const date = new Date(parseInt(tmpuseraloc.start) * 1000)
                 // console.log("tmpuseraloc.start==>", tmpuseraloc.start)
                 // console.log("Date: " + date.getDate() +
@@ -108,24 +129,28 @@ function Reward_a(props) {
                 var different_month = (today.getFullYear() - date.getFullYear()) * 12 + (today.getMonth() - date.getMonth());
                 var claimable;
                 var current_timestamp = Math.round(new Date().getTime() / 1000)
-                console.log("current_timestamp,tmpuseraloc.start", current_timestamp,tmpuseraloc.start);
-                if ((current_timestamp - parseInt(tmpuseraloc.start)) > 78000) { claimable = true; } else { claimable = false }
+                console.log("current_timestamp,tmpuseraloc.start", current_timestamp, tmpuseraloc.start);
+                if ((current_timestamp - parseInt(tmpuseraloc.start)) > parseInt(duration)) { claimable = true; } else { claimable = false }
 
-                var end_time = new Date((parseInt(tmpuseraloc.start) + 78000) * 1000);
-                var rest_time = (parseInt(tmpuseraloc.start) + 78000) - current_timestamp;
+                var end_time = new Date((parseInt(tmpuseraloc.start) + parseInt(duration)) * 1000);
+                console.log("end_time", (parseInt(tmpuseraloc.start) + parseInt(duration)))
+                var rest_time = (parseInt(tmpuseraloc.start) + parseInt(duration)) - current_timestamp;
                 var day_flag = true;
-                rest_time /= (3600*24);
-                if(rest_time < 1){day_flag = false; rest_time = Math.round((rest_time) * 24)}else{
+                rest_time /= (3600 * 24);
+                if (rest_time < 1) { day_flag = false; rest_time = Math.round((rest_time) * 24) } else {
                     rest_time = Math.round(rest_time);
                 }
-                if(claimable){
-                    useraloc_id.push(i);
-                    userclaimablelength++;
+                if (claimable) {
+                    if (!tmpuseraloc.claimed) {
+                        userclaimalbleid.push(i);
+                        userclaimablelength++;
+                    }
                 }
-                var new_data = { aloc_id: i, claimable: claimable,day_flag: day_flag, rest_time:rest_time, end_time: end_time, start: date, amount: tmpuseraloc.amount, claimed: tmpuseraloc.claimed, different_month: different_month }
+                var new_data = { aloc_id: i, claimable: claimable, day_flag: day_flag, rest_time: rest_time, end_time: end_time, start: date, amount: tmpuseraloc.amount, claimed: tmpuseraloc.claimed, different_month: different_month }
                 useraloc.push(new_data);
             }
             await SetUserallocation(useraloc);
+            await SetuserClaimableAllocIds(userclaimalbleid);
             await SetuserAllocIds(useraloc_id);
             await SetUserCbLength(userclaimablelength);
             console.log("useralloc==>", userallocation);
@@ -156,12 +181,14 @@ function Reward_a(props) {
         try {
             const contractInstance = getMasterChefContrat(myWeb3);
             let res = ethers.utils.formatEther(await contractInstance.methods.totalPendingRewards(account).call());
+            let pendingamouttoclaim =  ethers.utils.formatEther(await contractInstance.methods.pendingAmount(account).call());
             let useralocl = await contractInstance.methods.userallocationlength(account).call();
             console.log("total pending defrag to vest===>", res);
             console.log("leg===>", useralocl);
             res = Math.round(res * 1000) / 1000;
             let totalusdpendingprice = Math.round(res * Defragprice * 100) / 100;
             setpendingdefrag(res);
+            setPendingAmount(pendingamouttoclaim);
             SetTotalusdprice(totalusdpendingprice);
             await SetUserAlloclength(useralocl);
         } catch (error) {
@@ -212,7 +239,7 @@ function Reward_a(props) {
                             </div>
                             <div>
                                 <span className="unclaimtxt">Unclaimed DEFRAG to vest</span>
-                                <div>{console.log("here ==>", userallocation)}
+                                <div>{console.log("here ==>", userallocation, useralocid)}
                                     <span style={{ fontSize: '25px' }}>{pendingdefrag}</span>
                                     <span style={{ fontSize: '15px' }}>Defrag ~ ${totalusdprice}</span>
                                 </div>
@@ -228,7 +255,7 @@ function Reward_a(props) {
                                     {useraloclength > 0 && <button className="seeschedule" style={{ fontSize: 'xx-small', fontWeight: '700', fontFamily: 'system-ui', backgroundColor: '#23b2ef' }} onClick={allocmodalopen}>see schedule</button>}
                                 </div>
                                 <div>
-                                    <span style={{ fontSize: '25px' }}>{pendingdefrag}</span>
+                                    <span style={{ fontSize: '25px' }}>{Math.round(pendingamount)}</span>
                                     <span style={{ fontSize: '15px' }}>Defrag ~ $100</span>
                                 </div>
                             </div>
@@ -293,7 +320,7 @@ function Reward_a(props) {
                                 <span className="unclaimtxt">Total Vesting</span>
                             </div>
                             <div>
-                                <span style={{ fontSize: '25px' }}>{pendingdefrag}</span>
+                                <span style={{ fontSize: '25px' }}>{pendingamount}</span>
                                 <span style={{ fontSize: '15px' }}>Defrag ~ $100</span>
                             </div>
                         </div>
@@ -304,7 +331,7 @@ function Reward_a(props) {
                 </Modal.Header>
                 <Modal.Body>
                     <span style={{ fontWeight: '200' }}>Defrag rewards are vested on a 6-month waterfall. This means your rewards will be available to claim 6-months after they're vested.</span>
-                  {  userclaimablelength > 0 && <button className="claimainbtn" onClick={allclaim}>Claim All  {userclaimablelength} &nbsp; Now</button>}
+                    {userclaimablelength > 0 && <button className="claimainbtn" onClick={allclaim}>Claim All  {userclaimablelength} &nbsp; Now</button>}
                     <div className="modalmainbody row">
                         <div className="modalsub1 col-4">
                             <span>vesting Amount</span>
@@ -316,25 +343,26 @@ function Reward_a(props) {
                             <span>Claimable all</span>
                         </div>
                     </div>
-                    {userallocation.map((obj, key) => (
-                        !obj.claimed && <div className="row" style={key % 2 === 0 ? { alignItems: 'center', backgroundColor: '#dbdcdd' } : { alignItems: 'center' }}>
-                            <div className="col-4">
-                                <span style={{ fontWeight: '500' }}>{Math.round(obj.amount / 10 ** 16) * 100}</span><span style={{ fontSize: '10px', fontWeight: '300', paddingLeft: '5px' }}>Defrag</span>
+                    {
+                        useralocid.map((obj, key) => (
+                            <div className="row" style={key % 2 === 0 ? { alignItems: 'center', backgroundColor: '#dbdcdd' } : { alignItems: 'center' }}>
+                                <div className="col-4">
+                                    <span style={{ fontWeight: '500' }}>{Math.round(userallocation[obj].amount / 10 ** 16) * 100}</span><span style={{ fontSize: '10px', fontWeight: '300', paddingLeft: '5px' }}>Defrag</span>
+                                </div>
+                                <div className="col-4" style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <span style={{ fontWeight: '500', alignSelf: 'start' }}>{userallocation[obj].start.getMonth() + 1}/{userallocation[obj].start.getDate()}/{userallocation[obj].start.getFullYear()}</span>
+                                    <span style={{ fontSize: '10px', fontWeight: '300', alignSelf: 'start' }}>{userallocation[obj].different_month} months ago</span>
+                                </div>
+                                <div className="col-4" style={userallocation[obj].claimable ? { paddingLeft: '10px' } : {}}>
+                                    {userallocation[obj].claimable ? <button style={{ backgroundColor: '#3182ce', fontSize: '10px' }} onClick={() => claim(userallocation[obj].aloc_id)}>Claim now</button> :
+                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                            <span style={{ fontWeight: '500', alignSelf: 'start' }}>{userallocation[obj].end_time.getMonth() + 1}/{userallocation[obj].end_time.getDate()}/{userallocation[obj].end_time.getFullYear()}</span>
+                                            {userallocation[obj].day_flag ? <span style={{ fontSize: '10px', fontWeight: '300', alignSelf: 'start' }}>in &nbsp; {userallocation[obj].rest_time} days </span> :
+                                                <span style={{ fontSize: '10px', fontWeight: '300', alignSelf: 'start' }}>in &nbsp; {userallocation[obj].rest_time} hours </span>}
+                                        </div>}
+                                </div>
                             </div>
-                            <div className="col-4" style={{ display: 'flex', flexDirection: 'column' }}>
-                                <span style={{ fontWeight: '500', alignSelf: 'start' }}>{obj.start.getMonth() + 1}/{obj.start.getDate()}/{obj.start.getFullYear()}</span>
-                                <span style={{ fontSize: '10px', fontWeight: '300', alignSelf: 'start' }}>{obj.different_month} months ago</span>
-                            </div>
-                            <div className="col-4"  style={obj.claimable ? { paddingLeft: '10px'}:{}}>
-                                {obj.claimable ? <button style={{ backgroundColor: '#3182ce', fontSize: '10px' }} onClick={()=>claim(obj.aloc_id)}>Claim now</button> :
-                                    <div style={{ display: 'flex', flexDirection: 'column'  }}>
-                                       <span style={{ fontWeight: '500', alignSelf: 'start' }}>{obj.end_time.getMonth() + 1}/{obj.end_time.getDate()}/{obj.end_time.getFullYear()}</span>
-                                       {obj.day_flag?<span style={{ fontSize: '10px', fontWeight: '300', alignSelf: 'start' }}>in &nbsp; {obj.rest_time} days </span> :
-                                       <span style={{ fontSize: '10px', fontWeight: '300', alignSelf: 'start' }}>in &nbsp; {obj.rest_time} hours </span> }
-                                    </div>}
-                            </div>
-                        </div>
-                    ))}
+                        ))}
 
                 </Modal.Body>
                 <Modal.Footer>

@@ -5,7 +5,7 @@ import Web3 from "web3"
 import { web3_modal } from "./api";
 import Stake from './components/stake';
 import "./App.css";
-import { Route, Switch, Router, Link } from 'react-router-dom';
+// import { Route, Switch, Router, Link } from 'react-router-dom';
 
 
 

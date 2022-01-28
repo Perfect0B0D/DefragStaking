@@ -168,13 +168,14 @@ function StakeLp(props) {
     useEffect(() => {
         if (connected && account) {
             (async () => {
-                getSlpbalance(myWeb3, account);
-                setvotingpower(Slpbalance*power);
-                getstkedvalue(myWeb3, account);
-                getapy(myWeb3);
+               await getSlpbalance(myWeb3, account);
+               console.log("await  setvotingpower(Slpbalance*power);",Slpbalance);
+               await  setvotingpower(Slpbalance*power);
+               await  getstkedvalue(myWeb3, account);
+               await getapy(myWeb3);
             })()
         }
-    },[connected, account])
+    },[connected, account, Slpbalance])
 
 
     return (

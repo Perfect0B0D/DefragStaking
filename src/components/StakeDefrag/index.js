@@ -162,13 +162,13 @@ function Stakedefrag(props) {
     useEffect(() => {
         if (connected && account) {
             (async () => {
-                getDefragbalance(myWeb3, account);
-                setvotingpower(defragbalance*power);
-                getstkedvalue(myWeb3, account);
-                getapy(myWeb3);
+               await getDefragbalance(myWeb3, account);
+               await getstkedvalue(myWeb3, account);
+               await setvotingpower(stakedvalue*power);       
+               await getapy(myWeb3);
             })()
         }
-    },[connected, account])
+    },[connected, account, stakedvalue])
 
     return (
         <div className="stake-a">

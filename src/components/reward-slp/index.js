@@ -8,7 +8,7 @@ import "./reward_slp.css"
 
 
 function Reward_slp(props) {
-    const { connected, account, myWeb3,votingpower } = props;
+    const { connected, account, myWeb3, votingpower} = props;
 
     const[pendingdefrag, setpendingdefrag] = useState(0.0);
 
