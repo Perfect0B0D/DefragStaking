@@ -13,7 +13,7 @@ async function getTotalReward(myweb3) {
     return Promise.reject(error);
   }
 }
-
+// Get Reward Data
 async function getUserReward(myweb3, account) {
   try {
     const contractInstance = getContractInstance(myweb3);
