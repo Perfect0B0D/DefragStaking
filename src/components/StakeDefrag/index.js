@@ -71,6 +71,7 @@ function Stakedefrag(props) {
 
     
     function buymore(){
+        console.log("clicked buy more btn!");
         if(connected){
         window.open('https://pancakeswap.finance/swap', '_blank');//set Defrag address
         }
@@ -180,7 +181,7 @@ function Stakedefrag(props) {
                     </div>
                     <div className="element-a-b col-lg-8 col-sm-12 row">
                         <div className="element-a-a col-6">
-                            <span>APY  <FaQuestionCircle style={{ height: '1rem', fontSize: 'xxx-small' }} data-tip data-for="APYquestiontip" /><div class="tooltip">Anual percentage yield</div></span>
+                            <span>APY  <FaQuestionCircle style={{ height: '1rem', fontSize: 'xxx-small' }} data-tip data-for="APYquestiontip" /><div className="tooltip">Anual percentage yield</div></span>
                             <span>{defrag_apy}%</span>
                             <ReactTooltip id="APYquestiontip" place="top" effect="solid">
                                 Annual Percentage Yield

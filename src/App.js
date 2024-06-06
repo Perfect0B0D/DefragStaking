@@ -1,137 +1,94 @@
-import React, { useEffect, useState } from "react";
-import Bottom from './components/bottom'
-import { chainhex, chainId } from "./config/site.config";
-import Web3 from "web3"
-import { web3_modal } from "./api";
-import Stake from './components/stake';
-import "./App.css";
-// import { Route, Switch, Router, Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import Web3 from 'web3';
+import { Route, Switch } from 'react-router-dom';
+import { chainhex, chainId } from './config/site.config';
+import { web3_modal } from './api';
+import Header from './components/Header';
+import Bottom from './components/Bottom';
+import Stake from './components/Stake';
+import VestingReward from './components/VestingReward';
+import './App.css';
 
-
-
-function App() {
-
-
-
+const App = () => {
   const [myWeb3, setMyWeb3] = useState(null);
   const [account, setAccount] = useState('');
-  const [connected, setconnect] = useState(false);
+  const [connected, setConnected] = useState(false);
 
-  const detectEthereumNetwork = (callback) => {
-    window.ethereum.request({ method: 'eth_chainId' }).then(async (cId) => {
-      if (parseInt(cId) != chainId) { // bsc testnet
-        window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: chainhex }], // chainId must be in hexadecimal numbers
-        }).then(() => {
-          return callback();
-        })
-      } else {
-        return callback();
-      }
-    });
-  }
-
+  const detectEthereumNetwork = async (callback) => {
+    const cId = await window.ethereum.request({ method: 'eth_chainId' });
+    if (parseInt(cId) !== chainId) {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: chainhex }],
+      });
+    }
+    callback();
+  };
 
   const connect = async () => {
     if (account !== '') {
       setAccount('');
       setMyWeb3(null);
-      setconnect(false);
+      setConnected(false);
       web3_modal.clearCachedProvider();
-      setTimeout(() => {
-        window.location.reload();
-      }, 1);
-
-    }
-    else {
+      setTimeout(() => window.location.reload(), 1);
+    } else {
       detectEthereumNetwork(async () => {
-        let provider = null;
+        let provider;
         try {
           provider = await web3_modal.connect();
         } catch (error) {
-          console.log(error);
+          console.error(error);
           window.location.reload();
           return;
         }
-        if (!provider.on) {
-          return;
-        }
 
-        provider.on('accountsChanged', async () => {
-          // console.log("accountchange");
-          setTimeout(() => window.location.reload(), 1)
-        });
+        if (!provider.on) return;
 
+        provider.on('accountsChanged', () => setTimeout(() => window.location.reload(), 1));
         provider.on('chainChanged', async (cid) => {
           if (parseInt(cid) !== chainId) {
             await web3_modal.off();
             setTimeout(() => window.location.reload(), 1);
-            return null;
           }
-        })
-
+        });
         provider.on('network', (_newNetwork, oldNetwork) => {
           if (!oldNetwork) return;
           window.location.reload();
         });
 
-
-        await web3_modal.toggleModal();
-        // provider.
-        // regular web3 provider methods
-        // console.log("1");
         const web3 = new Web3(provider);
-        // console.log("2");
         if (web3) {
-          // console.log("3");
           setMyWeb3(web3);
           const accounts = await web3.eth.getAccounts();
-          // console.log(accounts);
           setAccount(accounts[0]);
         }
       });
     }
-  }
-
-
+  };
 
   useEffect(() => {
-    (async () => {
-      if (myWeb3) {
-        setconnect(true);
-      } else {
-        console.log("not connect");
-      }
-    })()
-  }, [account, myWeb3])
+    if (myWeb3) {
+      setConnected(true);
+    } else {
+      console.log('not connected');
+    }
+  }, [account, myWeb3]);
+
   return (
     <div className="main">
-      <div className="header">
-        {/* <nav>
-          <Link to="/">Stakeing</Link>
-          <Link to="/vest">vesting</Link>
-        </nav> */}
-        <button className="my-btn connect-btn" onClick={() => connect()}>
-          <div className="connect-btn-text">
-            {account === "" ? "Connect to metamask" : account}
-          </div>
-        </button>
-      </div>
-
-
-      {/* <Switch>
-        <Route exact path='/'> */}
+      <Header account={account} connect={connect} />
+      <Switch>
+        <Route exact path='/'>
           <Stake connected={connected} account={account} myWeb3={myWeb3} />
-        {/* </Route> */}
-        {/* <Route  path='/vest'> */}
-          {/* <Vestingreward connected={connected} account={account} myWeb3={myWeb3} /> */}
-        {/* </Route>
-      </Switch> */}
-
+        </Route>
+        <Route path='/vest'>
+          <VestingReward connected={connected} account={account} myWeb3={myWeb3} />
+        </Route>
+      </Switch>
       <Bottom />
     </div>
   );
-}
+};
 
 export default App;
